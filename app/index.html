@@ -15,12 +15,13 @@
 	<h1>{{webTitle}}</h1>
 
 	<div>{{error}}</div>
-
-	Enter Summoner Name:
+	<h1>
+		<span class="label label-warning">Enter Summoner Name:</span>
+	</h1>
 
 	<form name="searchUser">
 		<input type="search" placeholder="Summoner to find" ng-model="username"  />
-		<input type="submit" value="Search" ng-click="search(username)"/>
+		<button type="button" class="btn btn-lg btn-success" ng-click="search(username)">Search</button>
 	</form> 
 
 		<p>Summoner Name: {{user.name}}</p>
