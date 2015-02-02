@@ -12,6 +12,7 @@
 </head>
 
 <body ng-controller="SummonerController">
+	
 	<div class = "container">
 		<div class="title">
 			<h1>{{webTitle}}</h1>
@@ -34,6 +35,7 @@
 			<div class="table">
 				<li ng-repeat = "match in checkfile.matches">
 					{{match.matchDuration}} seconds {{match.participants[0].stats.goldEarned}} gold earned
+					<p>Lane Position: {{match.participants[0].timeline.lane}} Role: {{match.participants[0].timeline.role}}</p>
 					<p>- Gold per minute:{{match.participants[0].stats.goldEarned/match.matchDuration*60}}</p>
 				</li>
 			</div>
