@@ -1,2 +1,33 @@
 <div>Match Information:</div>
-<div>{{test}}</div>
+<p>Match Id: {{match.matchId}}</p>
+<p>Player List:</p>
+ <select ng-model="sortOrder">
+   <option value="ID">ID</option>
+   <option value="Kills">Kills</option>
+   <option value="Deaths">Deaths</option>
+   <option value-"assists">Assists</option>
+   <option value="WardsPlaced">Wards Placed</option>
+   <option value="WardsKilled">Wards Killed</option>
+ </select>
+ <table>
+  <thead>
+    <tr>
+      <th>ID</th>
+      <th>Kills</th>
+      <th>Deaths</th>
+      <th>Assists</th>
+      <th>Wards Placed</th>
+      <th>Wards Killed</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr ng-repeat="participant in match.participants">
+      <td>  {{participant.participantId}} </td>
+      <td>  {{participant.stats.kills}} </td>
+      <td>  {{participant.stats.deaths}}  </td>
+      <td>  {{participant.stats.assists}} </td>
+      <td>  {{participant.stats.wardsPlaced}} </td>
+      <td>  {{participant.stats.wardsKilled}} </td>
+    </tr>
+  </tbody>
+</table>

@@ -1,4 +1,4 @@
-	<div>Routing Working</div>
+
 	<div class = "container">
 		<div class="title">
 			<h1>{{webTitle}}</h1>
@@ -20,10 +20,12 @@
 			<h4>Gold Earning stats for {{checkfile.matches.length}} match(s) played: </h4>
 			<div class="table">
 				<li ng-repeat = "match in checkfile.matches">
-					{{match.matchDuration}} seconds {{match.participants[0].stats.goldEarned}} gold earned
-					<p>Lane Position: {{match.participants[0].timeline.lane}} Role: {{match.participants[0].timeline.role}}</p>
-					<p>- Gold per minute:{{match.participants[0].stats.goldEarned/match.matchDuration*60}}</p>
-					<button ng-click="goTo(match.matchId)">More stats for this match</button>
+					<div>
+						{{match.matchDuration}} seconds {{match.participants[0].stats.goldEarned}} gold earned
+						<p>Lane Position: {{match.participants[0].timeline.lane}} Role: {{match.participants[0].timeline.role}}</p>
+						<p>- Gold per minute:{{match.participants[0].stats.goldEarned/match.matchDuration*60}}</p>
+						<button ng-click="goTo(match)">More stats for this match</button>
+					</div>
 				</li>
 			</div>
 			<p>Total time of matches: {{totalSeconds/60}} minutes</p>
