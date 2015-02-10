@@ -2,7 +2,6 @@
 
   var lolapi = function($http) {
 
-    var currentMatch;
 
     var getSummoner = function(username) {
 
@@ -20,18 +19,18 @@
         });
     };
 
-    var setMatch = function(match){
-      currentMatch = match;
-    }
+    var getMatch = function(matchId){
+        return $http.get("https://na.api.pvp.net/api/lol/na/v2.2/match/" + matchId + "?api_key=1a417329-8a55-43cb-9262-928bff0ccec9")
+          .then(function(response){
+            return response.data;
+          });
 
-    var getMatch = function(){
-      return currentMatch;
-    }
-    
+    };
+
+
     return {
       getSummoner : getSummoner,
       getMatchHistory : getMatchHistory,
-      setMatch : setMatch,
       getMatch : getMatch
     };
   };

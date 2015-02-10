@@ -1,28 +1,29 @@
+<div>{{error}}</div>
 <div>Match Information:</div>
 <p>Match Id: {{match.matchId}}</p>
 <p>Player List:</p>
- <select ng-model="sortOrder">
-   <option value="ID">ID</option>
-   <option value="Kills">Kills</option>
-   <option value="Deaths">Deaths</option>
-   <option value-"assists">Assists</option>
-   <option value="WardsPlaced">Wards Placed</option>
-   <option value="WardsKilled">Wards Killed</option>
+<div>Order By: </div>
+  <select ng-model="sortOrder">
+   <option value="-stats.kills">Kills</option>
+   <option value="-stats.deaths">Deaths</option>
+   <option value="-stats.assists">Assists</option>
+   <option value="-stats.wardsPlaced">Wards Placed</option>
+   <option value="-stats.wardsKilled">Wards Killed</option>
  </select>
  <table>
   <thead>
     <tr>
-      <th>ID</th>
-      <th>Kills</th>
-      <th>Deaths</th>
-      <th>Assists</th>
-      <th>Wards Placed</th>
-      <th>Wards Killed</th>
+      <th>|| Summoner Name |</th>
+      <th>| Kills |</th>
+      <th>| Deaths |</th>
+      <th>| Assists |</th>
+      <th>| Wards Placed |</th>
+      <th>| Wards Killed ||</th>
     </tr>
   </thead>
   <tbody>
-    <tr ng-repeat="participant in match.participants">
-      <td>  {{participant.participantId}} </td>
+    <tr ng-repeat="participant in match.participants | orderBy: sortOrder">
+      <td>  {{match.participantIdentities[participant.participantId].player.summonerName}} </td>
       <td>  {{participant.stats.kills}} </td>
       <td>  {{participant.stats.deaths}}  </td>
       <td>  {{participant.stats.assists}} </td>

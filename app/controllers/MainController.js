@@ -29,7 +29,6 @@
 		};
 
 		$scope.goTo = function(match){
-			lolapi.setMatch(match);
 			$location.path("/match/"+match.matchId);
 		}
 
