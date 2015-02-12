@@ -27,11 +27,19 @@
 
     };
 
+    var getChamp = function(champId){
+        return $http.get("https://na.api.pvp.net/api/lol/static-data/na/v1.2/champion/" + champId + "?api_key=1a417329-8a55-43cb-9262-928bff0ccec9")
+          .then(function(response){
+            return response.data;
+        });
+    };
+
 
     return {
       getSummoner : getSummoner,
       getMatchHistory : getMatchHistory,
-      getMatch : getMatch
+      getMatch : getMatch,
+      getChamp : getChamp
     };
   };
 
