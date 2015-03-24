@@ -21,6 +21,8 @@
 			<div class="table">
 				<li ng-repeat = "match in checkfile.matches | orderBy: match.matchCreation">
 					<p>
+						<h3 ng-show="{{match.participants[0].stats.winner}}">Victory with {{match.participants[0].champName}}!</h3>
+						<h3 ng-show="{{!match.participants[0].stats.winner}}">Loss with {{match.participants[0].champName}}.</h3>
 						<img ng-src="{{match.participants[0].champImgSrc}}" title="{{match.participants[0].champName}}">
 						<div> Match Date: {{match.matchCreation | date:'medium'}}</div>
 						<div> Champ Id: {{match.participants[0].championId}}</div>

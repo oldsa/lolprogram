@@ -4,6 +4,7 @@
 <p>Player List:</p>
 <div>Order By: </div>
   <select ng-model="sortOrder">
+    <option value="summonerName">Summoner Name</option>
    <option value="-stats.kills">Kills</option>
    <option value="-stats.deaths">Deaths</option>
    <option value="-stats.assists">Assists</option>
@@ -23,7 +24,7 @@
   </thead>
   <tbody>
     <tr ng-repeat="participant in match.participants | orderBy: sortOrder">
-      <td>  {{match.participantIdentities[participant.participantId].player.summonerName}} </td>
+      <td>  {{participant.summonerName}} </td>
       <td>  {{participant.stats.kills}} </td>
       <td>  {{participant.stats.deaths}}  </td>
       <td>  {{participant.stats.assists}} </td>
