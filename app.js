@@ -2,8 +2,12 @@
   
   var app = angular.module("LeagueViewer", ["ngRoute"]);
   
-  app.config(function($routeProvider){
+  app.config(function($routeProvider) {
     $routeProvider
+      .when("/", {
+        templateUrl: "main.html",
+        controller: "MainController"
+      })
       .when("/main", {
         templateUrl: "main.html",
         controller: "MainController"
@@ -12,8 +16,11 @@
         templateUrl: "match.html",
         controller: "MatchController"
       })
-      .otherwise({redirectTo:"/main"});
-    
+      .when("/rankedstats", {
+        templateUrl: "main.html",
+        controller: "MainController"
+      });
+      //.otherwise({redirectTo:"/main"});  
   });
   
 }());

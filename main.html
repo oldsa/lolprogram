@@ -1,25 +1,26 @@
 
-	<div class = "container">
+	<div class="container-fluid">
+		<h1>League of Legends Match History</h1>
 		<div class="title">
 			<h1>{{webTitle}}</h1>
 		</div>
 
-		<div class="">{{error}}</div>
+		<div class="">{{errorMessage}}</div>
 		<h1>
 			<span class="label label-warning">Enter Summoner Name:</span>
 		</h1>
 
 		<form name="searchUser">
 			<input type="search" placeholder="Summoner to find" ng-model="username"  />
-			<button type="button" class="btn btn-lg btn-success" ng-click="summonerSearch(username)">Search</button>
+			<input type="submit" value="Search" ng-click="summonerSearch(username)" />
 		</form> 
 		<div class="" ng-if="haveResults">
-			<p>Summoner Name: {{user.name}}</p>
-			<p>Summoner Id: {{user.id}}</p>
-			<p>Summoner Level: {{user.summonerLevel}}</6>
+			<p>Summoner Name: {{summoner.name}}</p>
+			<p>Summoner Id: {{summoner.id}}</p>
+			<p>Summoner Level: {{summoner.summonerLevel}}</6>
 			<h4>Gold Earning stats for {{checkfile.matches.length}} match(s) played: </h4>
-			<div class="table">
-				<li ng-repeat = "match in checkfile.matches | orderBy: match.matchCreation">
+			<div class="list">
+				<div class="listItem" ng-repeat = "match in checkfile.matches | orderBy: match.matchCreation">
 					<p>
 						<h3 ng-show="{{match.participants[0].stats.winner}}">Victory with {{match.participants[0].champName}}!</h3>
 						<h3 ng-show="{{!match.participants[0].stats.winner}}">Loss with {{match.participants[0].champName}}.</h3>
@@ -34,7 +35,7 @@
 						<div> Wards Placed: {{match.participants[0].stats.wardsPlaced}} Wards Killed: {{match.participants[0].stats.wardsKilled}}</div>
 						<button ng-click="goTo(match)">More stats for this match</button>
 					</p>
-				</li>
+				</div>
 			</div>
 			<p>Total time of matches: {{totalSeconds/60}} minutes</p>
 			<p>Total gold earned: {{totalGoldEarned}}</p>
