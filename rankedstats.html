@@ -1,0 +1,55 @@
+
+	<div class="container-fluid">
+		<h1>League of Legends Match History</h1>
+		<div class="title">
+			<h1>{{webTitle}}</h1>
+		</div>
+
+		<div class="">{{errorMessage}}</div>
+		<h1>
+			<span class="label label-warning">Enter Summoner Name:</span>
+		</h1>
+
+		<form name="searchUser">
+			<input type="search" placeholder="Summoner to find" ng-model="username"  />
+			<input type="submit" value="Search" ng-click="summonerSearch(username)" />
+		</form> 
+		<div class="" ng-if="haveResults">
+			<p>Summoner Name: {{summoner.name}}</p>
+			<p>Summoner Id: {{summoner.id}}</p>
+			<p>Summoner Level: {{summoner.summonerLevel}}</6>
+			<h4>Gold Earning stats for {{checkfile.matches.length}} match(s) played: </h4>
+			<div class="list">
+				<div class="listItem" ng-repeat = "match in checkfile.matches | orderBy: match.matchCreation">
+					<p>
+						<div>
+							<div>	
+								<img class="championImage" ng-src="{{match.participants[0].champImgSrc}}" title="{{match.participants[0].champName}}">
+
+									
+								<div ng-show="match.participants[0].stats.winner"> Victory! </div>
+								<div ng-show="!match.participants[0].stats.winner"> Defeat! </div>
+							</div>
+							<div>	
+								<div> Match Date: {{match.matchCreation | date:'medium'}}</div>
+								<div>
+									Champion: {{match.participants[0].champName}}
+								</div>
+								<div> Match time: {{match.matchDuration}} seconds {{match.participants[0].stats.goldEarned}} gold earned</div>
+								<div> Lane Position: {{match.participants[0].timeline.lane}} Role: {{match.participants[0].timeline.role}}</div>
+								<div> Gold per minute: {{match.participants[0].stats.goldEarned/match.matchDuration*60}}</div>
+								<div> Minions killed: {{match.participants[0].stats.minionsKilled}}</div>
+								<div> Kills: {{match.participants[0].stats.kills}} Deaths: {{match.participants[0].stats.deaths}} Assists {{match.participants[0].stats.assists}}</div>
+								<div> Wards Placed: {{match.participants[0].stats.wardsPlaced}} Wards Killed: {{match.participants[0].stats.wardsKilled}}</div>
+
+								<button ng-click="goTo(match)">More stats for this match</button>
+							</div>
+						</div>
+					</p>
+				</div>
+			</div>
+			<p>Total time of matches: {{totalSeconds/60}} minutes</p>
+			<p>Total gold earned: {{totalGoldEarned}}</p>
+			<p>Average gold per minute for last {{checkfile.matches.length}}: {{totalGoldEarned/totalSeconds*60}}</p>
+		</div>
+	</div>
