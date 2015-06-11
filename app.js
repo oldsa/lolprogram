@@ -5,19 +5,19 @@
   app.config(function($routeProvider) {
     $routeProvider
       .when("/", {
-        templateUrl: "main.html",
+        templateUrl: "app/main/main.html",
         controller: "MainController"
       })
       .when("/main", {
-        templateUrl: "main.html",
+        templateUrl: "app/main/main.html",
         controller: "MainController"
       })
       .when("/match/:matchId", {
-        templateUrl: "match.html",
+        templateUrl: "app/match/match.html",
         controller: "MatchController"
       })
       .when("/rankedstats", {
-        templateUrl: "main.html",
+        templateUrl: "app/main/main.html",
         controller: "MainController"
       });
       //.otherwise({redirectTo:"/main"});  
