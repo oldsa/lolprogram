@@ -43,30 +43,6 @@ angular.module("LeagueViewer")
 				participant.championUrl = "http://ddragon.leagueoflegends.com/cdn/5.2.1/img/champion/"+ championName +".png";
 			};
 
-			$scope.nameClicked = function() {
-				$scope.orderProp = 'summonerName';
-			};
-
-			$scope.killsClicked = function() {
-				$scope.orderProp = '-stats.kills';
-			};
-			
-			$scope.deathsClicked = function() {
-				$scope.orderProp = '-stats.deaths';
-			};
-			
-			$scope.assistsClicked = function() {
-				$scope.orderProp = '-stats.assists';
-			};
-			
-			$scope.wardsPlacedClicked = function() {
-				$scope.orderProp = '-stats.wardsPlaced';
-			};
-
-			$scope.wardKilledClicked = function() {
-				$scope.orderProp = '-stats.wardsKilled';
-			};
-
 			var onError = function(error) {
 				$scope.error = "Could not fetch match information";
 			};

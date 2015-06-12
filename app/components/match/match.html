@@ -6,12 +6,13 @@
   <table class="table">
     <thead>
       <tr>
-        <th ng-click="nameClicked()">Summoner Name</th>
-        <th ng-click="killsClicked()">Kills</th>
-        <th ng-click="deathsClicked()">Deaths</th>
-        <th ng-click="assistsClicked()">Assists</th>
-        <th ng-click="wardsPlacedClicked()">Wards Placed</th>
-        <th ng-click="wardKilledClicked()">Wards Killed</th>
+        <th ng-click="orderProp='summonerName'">Summoner Name</th>
+        <th ng-click="orderProp='-stats.kills'">Kills</th>
+        <th ng-click="orderProp='-stats.deaths'">Deaths</th>
+        <th ng-click="orderProp='-stats.assists'">Assists</th>
+        <th ng-click="orderProp='-stats.wardsPlaced'">Wards Placed</th>
+        <th ng-click="orderProp='-stats.wardsKilled'">Wards Killed</th>
+        <th ng-click="orderProp='-stats.totalDamageDealtToChampions'">Damage Dealt to Champs</th>
       </tr>
     </thead>
     <tbody>
@@ -22,6 +23,7 @@
           <td>  {{participant.stats.assists}} </td>
           <td>  {{participant.stats.wardsPlaced}} </td>
           <td>  {{participant.stats.wardsKilled}} </td>
+          <td>  {{participant.stats.totalDamageDealtToChampions}} </td>
       </tr>
     </tbody>
   </table>
