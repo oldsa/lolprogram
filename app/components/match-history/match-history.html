@@ -1,20 +1,12 @@
 
 	<div class="container-fluid">
-		<h1>League of Legends Match History</h1>
-		<div class="title">
-			<h1>{{webTitle}}</h1>
-		</div>
-
-		<div class="">{{errorMessage}}</div>
-		<h1>
-			<span class="label label-warning">Enter Summoner Name:</span>
-		</h1>
-
-		<form name="searchUser">
-			<input type="search" placeholder="Summoner to find" ng-model="username"  />
-			<input type="submit" value="Search" ng-click="summonerSearch(username)" />
-		</form> 
-		<div class="" ng-if="haveResults">
+		<div class="search-bar">
+			<form name="searchUser">
+				<input class="search-bar-text" type="search" placeholder="Summoner to find" ng-model="username"  />
+				<input class="search-bar-botton" type="submit" value="Search" ng-click="summonerSearch(username)" />
+			</form> 
+		<div/>
+		<div class="summoner-bar" ng-if="haveResults">
 			<p>Summoner Name: {{summoner.name}}</p>
 			<p>Summoner Id: {{summoner.id}}</p>
 			<p>Summoner Level: {{summoner.summonerLevel}}</6>

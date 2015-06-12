@@ -7,6 +7,7 @@ angular.module("LeagueViewer")
 		'lolapi',
 		'$routeParams',		
 		function($scope, $http, $location, lolapi, $routeParams) {
+			
 			var summonerMatchRecieved = function(matchInfo) {
 				$scope.match = matchInfo;
 				for (var i = 0; i < $scope.match.participantIdentities.length; i++) {

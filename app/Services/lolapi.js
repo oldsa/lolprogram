@@ -1,6 +1,6 @@
 var app = angular.module("LeagueViewer");
 
-app.factory("lolapi", function($http) {
+angular.module("LeagueViewer").factory("lolapi", function($http) {
   var apiKey = "1a417329-8a55-43cb-9262-928bff0ccec9";
   var baseUrl = "https://na.api.pvp.net/api/lol/";
 

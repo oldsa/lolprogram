@@ -1,5 +1,5 @@
 angular.module('LeagueViewer')
-	.controller('MainController',
+	.controller('MatchHistoryCtrl',
 	[
 		'$scope',
 		'$location',
@@ -10,26 +10,15 @@ angular.module('LeagueViewer')
 			$scope.haveResults = false;
 			$scope.totalSeconds = 0;
 			$scope.totalGoldEarned = 0;
-			$scope.webTitle = "Summoner Information";		
+			$scope.webTitle = "Summoner Information";
 			$scope.errorMessage = "";
-
-			$scope.summonerSearch = function(username){
-				lolapi.getSummoner(username).then(summonerSearchSuccess, onGetSummonerSearchError);
-			};
 
 			$scope.goTo = function(match) {
 				$location.path('/match/'+  match.matchId);
 			};
 
-			var summonerSearchSuccess = function(response) {
-				angular.forEach(response, function(value, key) {
-			  		$scope.summoner = value;
-			  		getMatchHistory($scope.summoner);
-				});
-			};
-
-			var getMatchHistory = function(summoner) {	
-				lolapi.getMatchHistory(summoner.id).then(onGetMatchHistorySuccess, onGetMatchHistoryError);
+			var getMatchHistory = function(summonerId) {	
+				lolapi.getMatchHistory(summonerId).then(onGetMatchHistorySuccess, onGetMatchHistoryError);
 			};
 
 			var onGetMatchHistorySuccess = function(response) {
@@ -63,6 +52,8 @@ angular.module('LeagueViewer')
 			var onGetSummonerSearchError = function(error) {
 				$scope.errorMessage = "Could not fetch summoner information.";
 			};
+
+			getMatchHistory($routeParams.summonerId);
 		}
 	]
 );
