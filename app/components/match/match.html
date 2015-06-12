@@ -1,36 +1,28 @@
 <!-- Individual match stats -->
-<div>{{errorMessage}}</div>
-<div>Match Information:</div>
-<p>Match Id: {{match.matchId}}</p>
-<p>Player List:</p>
-<div>Order By: </div>
-  <select ng-model="sortOrder">
-    <option value="summonerName">Summoner Name</option>
-   <option value="-stats.kills">Kills</option>
-   <option value="-stats.deaths">Deaths</option>
-   <option value="-stats.assists">Assists</option>
-   <option value="-stats.wardsPlaced">Wards Placed</option>
-   <option value="-stats.wardsKilled">Wards Killed</option>
- </select>
- <table>
-  <thead>
-    <tr>
-      <th>|| Summoner Name |</th>
-      <th>| Kills |</th>
-      <th>| Deaths |</th>
-      <th>| Assists |</th>
-      <th>| Wards Placed |</th>
-      <th>| Wards Killed ||</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr ng-repeat="participant in match.participants | orderBy: sortOrder">
-      <td>  {{participant.summonerName}} </td>
-      <td>  {{participant.stats.kills}} </td>
-      <td>  {{participant.stats.deaths}}  </td>
-      <td>  {{participant.stats.assists}} </td>
-      <td>  {{participant.stats.wardsPlaced}} </td>
-      <td>  {{participant.stats.wardsKilled}} </td>
-    </tr>
-  </tbody>
-</table>
+<div class="match-info">
+  <div class="match-info-header">
+    <p>Match Id: {{match.matchId}}</p>
+  </div>
+  <table class="table">
+    <thead>
+      <tr>
+        <th ng-click="nameClicked()">Summoner Name</th>
+        <th ng-click="killsClicked()">Kills</th>
+        <th ng-click="deathsClicked()">Deaths</th>
+        <th ng-click="assistsClicked()">Assists</th>
+        <th ng-click="wardsPlacedClicked()">Wards Placed</th>
+        <th ng-click="wardKilledClicked()">Wards Killed</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr ng-repeat="participant in match.participants | orderBy: orderProp" class="{{participant.teamColor}}">
+          <td> <img class="champ-thumbnail" ng-src="{{participant.championUrl}}">{{participant.summonerName}}</td>
+          <td>  {{participant.stats.kills}} </td>
+          <td>  {{participant.stats.deaths}}  </td>
+          <td>  {{participant.stats.assists}} </td>
+          <td>  {{participant.stats.wardsPlaced}} </td>
+          <td>  {{participant.stats.wardsKilled}} </td>
+      </tr>
+    </tbody>
+  </table>
+<div/>

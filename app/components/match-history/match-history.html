@@ -1,11 +1,5 @@
 
 	<div class="container-fluid">
-		<div class="search-bar">
-			<form name="searchUser">
-				<input class="search-bar-text" type="search" placeholder="Summoner to find" ng-model="username"  />
-				<input class="search-bar-botton" type="submit" value="Search" ng-click="summonerSearch(username)" />
-			</form> 
-		<div/>
 		<div class="summoner-bar" ng-if="haveResults">
 			<p>Summoner Name: {{summoner.name}}</p>
 			<p>Summoner Id: {{summoner.id}}</p>

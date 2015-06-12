@@ -1,0 +1,16 @@
+.match-info-header {
+	padding: 10px;
+}
+
+img.champ-thumbnail {
+	padding-right: 5px;
+	height: 30px;
+}
+
+.blue {
+	background-color: lightblue;
+}
+
+.red {
+	background-color: lightsalmon;
+}

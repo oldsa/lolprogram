@@ -17,6 +17,22 @@ angular.module('LeagueViewer')
 				$location.path('/match/'+  match.matchId);
 			};
 
+			var summonerSearch = function(username) {
+				summonerName = username;
+				//$location.path('/matchHistory/'+  username);
+				lolapi.getSummoner(username).then(summonerSearchSuccess, onGetSummonerSearchError);
+			};
+
+			var onGetSummonerSearchError = function(error) {
+				$scope.errorMessage = "Could not fetch Match History for given summoner.";
+			};
+
+			var summonerSearchSuccess = function(response) {
+				$scope.summoner = response[summonerName];
+				//$location.path('/matchHistory/'+  summonerInfo.id);
+				getMatchHistory($scope.summoner.id);
+			};
+
 			var getMatchHistory = function(summonerId) {	
 				lolapi.getMatchHistory(summonerId).then(onGetMatchHistorySuccess, onGetMatchHistoryError);
 			};
@@ -53,7 +69,7 @@ angular.module('LeagueViewer')
 				$scope.errorMessage = "Could not fetch summoner information.";
 			};
 
-			getMatchHistory($routeParams.summonerId);
+			summonerSearch($routeParams.summonerName);
 		}
 	]
 );

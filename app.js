@@ -12,7 +12,7 @@
         templateUrl: "app/components/main/main.html",
         controller: "MainController"
       })
-      .when("/matchHistory/:summonerId", {
+      .when("/matchHistory/:summonerName", {
         templateUrl: "app/components/match-history/match-history.html",
         controller: "MatchHistoryCtrl"
       })
