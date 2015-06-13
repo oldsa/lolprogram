@@ -13,6 +13,10 @@ angular.module('LeagueViewer')
 			$scope.webTitle = "Summoner Information";
 			$scope.errorMessage = "";
 
+			$scope.summonerSearch = function(summonerName) {
+				$location.path('/matchHistory/'+  summonerName);
+			};
+
 			$scope.goTo = function(match) {
 				$location.path('/match/'+  match.matchId);
 			};

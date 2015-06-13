@@ -10,6 +10,10 @@ angular.module("LeagueViewer")
 			$scope.championImageMap = {};
 			$scope.orderProp = '-stat.kills';
 
+			$scope.summonerSearch = function(summonerName) {
+				$location.path('/matchHistory/'+  summonerName);
+			};
+
 			var summonerMatchRecieved = function(matchInfo) {
 				$scope.match = matchInfo;
 				for (var i = 0; i < $scope.match.participants.length; i++) {

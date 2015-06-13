@@ -1,10 +1,12 @@
 <!-- Individual match stats -->
+<div ng-include src="'app/components/main/main.html'"></div>
+
 <div class="match-info">
   <div class="match-info-header">
     <p>Match Id: {{match.matchId}}</p>
   </div>
   <table class="table">
-    <thead>
+    <thead class="match-info-thead">
       <tr>
         <th ng-click="orderProp='summonerName'">Summoner Name</th>
         <th ng-click="orderProp='-stats.kills'">Kills</th>
@@ -17,7 +19,12 @@
     </thead>
     <tbody>
       <tr ng-repeat="participant in match.participants | orderBy: orderProp" class="{{participant.teamColor}}">
-          <td> <img class="champ-thumbnail" ng-src="{{participant.championUrl}}">{{participant.summonerName}}</td>
+          <td> 
+            <img class="champ-thumbnail" ng-src="{{participant.championUrl}}">
+            {{participant.summonerName}}
+            <a ng-show="{{participant.stats.winner}}">W</a>
+            <a ng-show="{{!participant.stats.winner}}">L</a>
+          </td>
           <td>  {{participant.stats.kills}} </td>
           <td>  {{participant.stats.deaths}}  </td>
           <td>  {{participant.stats.assists}} </td>
