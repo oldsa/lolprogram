@@ -8,12 +8,12 @@ img.champ-thumbnail {
 	height: 30px;
 }
 
-.blue {
+tr.blue-team {
 	background-color: #003729;
 	color: #6FA698;
 }
 
-.red {
+tr.red-team {
 	background-color: #0E5342;
 	color: #6FA698;
 }

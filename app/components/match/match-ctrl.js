@@ -20,10 +20,10 @@ angular.module("LeagueViewer")
 					$scope.match.participants[i].summonerName = $scope.match.participantIdentities[i].player.summonerName;
 					$scope.getChampionImage($scope.match.participants[i]);
 					if ($scope.match.participants[i].teamId === 100) {
-						$scope.match.participants[i].teamColor = 'blue';
+						$scope.match.participants[i].teamStyle = 'blue-team';
 					}
 					else {
-						$scope.match.participants[i].teamColor = 'red';
+						$scope.match.participants[i].teamStyle = 'red-team';
 					}
 				}
 				console.log('test');

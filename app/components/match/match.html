@@ -18,7 +18,7 @@
       </tr>
     </thead>
     <tbody>
-      <tr ng-repeat="participant in match.participants | orderBy: orderProp" class="{{participant.teamColor}}">
+      <tr ng-repeat="participant in match.participants | orderBy: orderProp" class="{{participant.teamStyle}}">
           <td> 
             <img class="champ-thumbnail" ng-src="{{participant.championUrl}}">
             {{participant.summonerName}}
