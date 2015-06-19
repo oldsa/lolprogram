@@ -1,0 +1,42 @@
+.match-info-header {
+	padding: 10px;
+	color: #6FA698;
+}
+
+img.champ-thumbnail {
+	padding-right: 5px;
+	height: 30px;
+}
+
+tr.blue-team {
+	background-color: #003729;
+	color: #6FA698;
+}
+
+tr.red-team {
+	background-color: #0E5342;
+	color: #6FA698;
+}
+
+td {
+	border: 1px solid #ddd;
+	font-weight: 300;
+}
+
+td a {
+  padding: 5px;
+  font-size: 20px;
+}
+
+thead.match-info-thead {
+	background-color: #003729;
+	color: #6FA698;
+	font-weight: 700;
+}
+thead tr th:hover {
+	background-color: #0a765d;
+}
+
+.match-info {
+	padding: 20px;
+}

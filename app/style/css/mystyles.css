@@ -1,0 +1,20 @@
+img.championImage {
+   /*max-width: 50px;
+   max-height: 50px;*/
+}
+
+.summoner-bar {
+	text-align: center;
+}
+
+.container-fluid {
+	text-align: center;
+}
+
+input.search-bar-text {
+	margin-bottom: 0px;
+}
+
+body {
+	background-color: #256F5C;
+}

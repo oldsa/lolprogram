@@ -1,0 +1,37 @@
+<!-- Individual match stats -->
+<div ng-include src="'app/components/main/main.html'"></div>
+
+<div class="match-info">
+  <div class="match-info-header">
+    <p>Match Id: {{match.matchId}}</p>
+  </div>
+  <table class="table">
+    <thead class="match-info-thead">
+      <tr>
+        <th ng-click="orderProp='summonerName'">Summoner Name</th>
+        <th ng-click="orderProp='-stats.kills'">Kills</th>
+        <th ng-click="orderProp='-stats.deaths'">Deaths</th>
+        <th ng-click="orderProp='-stats.assists'">Assists</th>
+        <th ng-click="orderProp='-stats.wardsPlaced'">Wards Placed</th>
+        <th ng-click="orderProp='-stats.wardsKilled'">Wards Killed</th>
+        <th ng-click="orderProp='-stats.totalDamageDealtToChampions'">Damage Dealt to Champs</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr ng-repeat="participant in match.participants | orderBy: orderProp" class="{{participant.teamStyle}}">
+          <td> 
+            <img class="champ-thumbnail" ng-src="{{participant.championUrl}}">
+            {{participant.summonerName}}
+            <a ng-show="{{participant.stats.winner}}">W</a>
+            <a ng-show="{{!participant.stats.winner}}">L</a>
+          </td>
+          <td>  {{participant.stats.kills}} </td>
+          <td>  {{participant.stats.deaths}}  </td>
+          <td>  {{participant.stats.assists}} </td>
+          <td>  {{participant.stats.wardsPlaced}} </td>
+          <td>  {{participant.stats.wardsKilled}} </td>
+          <td>  {{participant.stats.totalDamageDealtToChampions}} </td>
+      </tr>
+    </tbody>
+  </table>
+<div/>

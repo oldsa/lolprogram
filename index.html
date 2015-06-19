@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="en" ng-app="LeagueViewer">
+<head>
+  <meta charset="utf-8">
+  <title>My HTML File</title>
+  <link rel="stylesheet" href="../bower_components/bootstrap/dist/css/bootstrap.css">
+  <link href="app/style/css/bootstrap.min.css" rel="stylesheet" media="screen">
+  <link href="app/style/css/mystyles.css" rel="stylesheet" media="screen">
+
+  <script src="bower_components/angular/angular.js"></script>
+  <script src="node_modules/angular-route/angular-route.js"> </script>
+  <script src="app/js/jquery-2.1.3.min.js"></script>
+  <script src="app/js/bootstrap.min.js"></script>
+  <script src="app.js"></script>
+  <script src="app/Services/lolapi.js"></script>
+
+  <script src="app/components/main/main-ctrl.js"></script>
+  <link href="app/components/main/main.css" rel="stylesheet">
+
+  <script src="app/components/match/match-ctrl.js"></script>
+  <link href="app/components/match/match.css" rel="stylesheet">
+
+  <script src="app/components/match-history/match-history-ctrl.js"></script>
+  <link href="app/components/match-history/match-history.css" rel="stylesheet">
+</head>
+
+<body>  
+	<div ng-view></div>
+</body>
+	
+</html>
