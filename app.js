@@ -20,6 +20,10 @@
         templateUrl: "app/components/match/match.html",
         controller: "MatchController"
       })
+      /*.when("/currentgame/:currentGameId", {
+        templateUrl: "app/components/current-game/current-game.html",
+        controller: "CurrentGameCtrl"
+      })*/
       .when("/rankedstats", {
         templateUrl: "app/components/main/main.html",
         controller: "MainController"

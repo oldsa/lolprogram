@@ -57,8 +57,9 @@ angular.module('LeagueViewer')
 					function(response) {
 						match.participants[0].champName = response.name;
 						match.participants[0].champImgSrc = "http://ddragon.leagueoflegends.com/cdn/5.2.1/img/champion/"+ match.participants[0].champName +".png";
-					}
-				, onGetChampionImageError);
+					}, 
+				  onGetChampionImageError
+			  );
 			};
 
 			var onGetChampionImageError = function(reason){
@@ -67,10 +68,6 @@ angular.module('LeagueViewer')
 
 			var onGetMatchHistoryError = function(error) {
 				$scope.errorMessage = "Could not fetch Match History for given summoner.";
-			};
-
-			var onGetSummonerSearchError = function(error) {
-				$scope.errorMessage = "Could not fetch summoner information.";
 			};
 
 			summonerSearch($routeParams.summonerName);
