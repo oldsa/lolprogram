@@ -14,6 +14,16 @@ angular.module("LeagueViewer")
 				$location.path('/matchHistory/'+  summonerName);
 			};
 
+			$scope.getChampionImage = function(participant) {
+				var championName = '';
+				for (var key in $scope.championImageMap) {
+					if ($scope.championImageMap[key].id == participant.championId) {
+						championName = key;
+					}
+				}
+				participant.championUrl = "http://ddragon.leagueoflegends.com/cdn/5.2.1/img/champion/"+ championName +".png";
+			};
+
 			var summonerMatchRecieved = function(matchInfo) {
 				$scope.match = matchInfo;
 				for (var i = 0; i < $scope.match.participants.length; i++) {
@@ -36,16 +46,6 @@ angular.module("LeagueViewer")
 			  error(function(data, status, headers, config) {
 			  	console.log('could not get champions.json');
 			  });
-
-			$scope.getChampionImage = function(participant) {
-				var championName = '';
-				for (var key in $scope.championImageMap) {
-					if ($scope.championImageMap[key].id == participant.championId) {
-						championName = key;
-					}
-				}
-				participant.championUrl = "http://ddragon.leagueoflegends.com/cdn/5.2.1/img/champion/"+ championName +".png";
-			};
 
 			var onError = function(error) {
 				$scope.error = "Could not fetch match information";
