@@ -1,15 +1,17 @@
-.listItem {
+.match-history-game {
 	border: 1px solid black;
 	margin-bottom: 5px;
 	background-color: #003729;
 	color: #6FA698;
+	display: flex;
+	align-items: center;
 }
 
-a.red {
+.red {
 	color: red;
 }
 
-a.green {
+.green {
 	color: green;
 }
 
@@ -17,4 +19,11 @@ a.gold {
 	color: gold;
 }
 
-img.match-history-champion-image {}
+.match-history-champion-image {
+	height: 100%;
+  width: auto;
+}
+
+.match-history-win-loss {
+	padding: 20px;
+}

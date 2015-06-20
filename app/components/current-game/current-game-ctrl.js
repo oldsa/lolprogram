@@ -1,4 +1,4 @@
-/*angular.module('LeagueViewer')
+angular.module('LeagueViewer')
 	.controller('CurrentGameCtrl',
 	[
 		'$scope',
@@ -12,4 +12,3 @@
 		}
 	]
 );
-*/

@@ -1,31 +1,37 @@
 <div ng-include src="'app/components/main/main.html'"></div>
 
-	<div class="container-fluid">
+	<div class="match-history-content container-fluid">
 		<div class="summoner-bar" ng-if="haveResults">
-			<p>Summoner Name: {{summoner.name}}</p>
-			<p>Summoner Id: {{summoner.id}}</p>
-			<p>Summoner Level: {{summoner.summonerLevel}}</6>
-			<h4>Gold Earning stats for {{checkfile.matches.length}} match(s) played: </h4>
-			<div class="list">
-				<div class="listItem" ng-repeat = "match in checkfile.matches | orderBy: match.matchCreation">
-					<p>
-						<h3 ng-show="{{match.participants[0].stats.winner}}">Victory with {{match.participants[0].champName}}!</h3>
-						<h3 ng-show="{{!match.participants[0].stats.winner}}">Loss with {{match.participants[0].champName}}.</h3>
-						<img class="match-history-champion-image" ng-src="{{match.participants[0].champImgSrc}}" title="{{match.participants[0].champName}}">
-						<div> Match Date: {{match.matchCreation | date:'medium'}}</div>
-						<div> Champ Id: {{match.participants[0].championId}}</div>
-						<div> Champ Name: {{match.participants[0].champName}}</div>
-						<div> {{match.matchDuration}} seconds {{match.participants[0].stats.goldEarned}} gold earned</div>
-						<div> Lane Position: {{match.participants[0].timeline.lane}} Role: {{match.participants[0].timeline.role}}</div>
-						<div> Gold per minute: <a class="gold">{{match.participants[0].stats.goldEarned/match.matchDuration*60}}</a></div>
-						<div> Kills: <a class="green">{{match.participants[0].stats.kills}} </a>Deaths: <a class="red">{{match.participants[0].stats.deaths}}</a> Assists <a class="blue">{{match.participants[0].stats.assists}}</a></div>
-						<div> Wards Placed: {{match.participants[0].stats.wardsPlaced}} Wards Killed: {{match.participants[0].stats.wardsKilled}}</div>
-						<button ng-click="goTo(match)">More stats for this match</button>
-					</p>
+			<h1>Summoner: {{summoner.name}}</h1>
+			<h1>Level: {{summoner.summonerLevel}}</h1>
+
+			<h3>Total time of matches: {{totalSeconds/60}} minutes</h3>
+			<h3>Total gold earned: {{totalGoldEarned}}</h3>
+			<h3>Average gold per minute for last {{checkfile.matches.length}}: {{totalGoldEarned/totalSeconds*60}}</h3>
+			<h4>Stats for last {{checkfile.matches.length}} match(s) played: </h4>
+			<div class="match-history-list">
+				<div class="match-history-game" ng-repeat = "match in checkfile.matches|orderBy:matchCreation:reverse">
+					<div class="match-history-win-loss">
+						<h3 class="green" ng-show="{{match.participants[0].stats.winner}}">W</h3>
+						<h3 class="red" ng-show="{{!match.participants[0].stats.winner}}">L</h3>
+					</div>
+					<div class="match-history-champion-image">
+						<img ng-src="{{match.participants[0].champImgSrc}}" title="{{match.participants[0].champName}}"/>
+					</div>
+					<div class="match-history-date"> 
+						<div>Date:</div> 
+						<div>{{match.matchCreation | date:'medium'}}</div>
+					</div>
+					<div> {{match.matchDuration}} seconds {{match.participants[0].stats.goldEarned}} gold earned</div>
+					<div>
+						<div>Lane:</div> 
+						<div>{{match.participants[0].timeline.lane}}</div>
+					</div>
+					<div> Gold per minute: <a class="gold">{{match.participants[0].stats.goldEarned/match.matchDuration*60}}</a></div>
+					<div> Kills: <a class="green">{{match.participants[0].stats.kills}} </a>Deaths: <a class="red">{{match.participants[0].stats.deaths}}</a> Assists <a class="blue">{{match.participants[0].stats.assists}}</a></div>
+					<div> Wards Placed: {{match.participants[0].stats.wardsPlaced}} Wards Killed: {{match.participants[0].stats.wardsKilled}}</div>
+					<button ng-click="goTo(match)">More stats for this match</button>
 				</div>
 			</div>
-			<p>Total time of matches: {{totalSeconds/60}} minutes</p>
-			<p>Total gold earned: {{totalGoldEarned}}</p>
-			<p>Average gold per minute for last {{checkfile.matches.length}}: {{totalGoldEarned/totalSeconds*60}}</p>
 		</div>
 	</div>
