@@ -1,5 +1,5 @@
 /bower_components/
 /node_modules/*
 node_modules/*
-backendNew/node_modules/*
-/backendNew/node_modules/*
+backend/node_modules/*
+/backend/node_modules/*
