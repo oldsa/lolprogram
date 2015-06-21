@@ -20,7 +20,6 @@ angular.module("LeagueViewer")
 					if ($scope.championImageMap[key].id == participant.championId) {
 						championName = key;
 					}
-					championName = 'test';
 				}
 				participant.championUrl = "http://ddragon.leagueoflegends.com/cdn/5.2.1/img/champion/"+ championName +".png";
 			};
