@@ -32,9 +32,9 @@ angular.module('LeagueViewer')
 			};
 
 			var summonerSearchSuccess = function(response) {
-				$scope.summoner = response[summonerName];
+				//$scope.summoner = response[summonerName];
 				//$location.path('/matchHistory/'+  summonerInfo.id);
-				getMatchHistory($scope.summoner.id);
+				getMatchHistory(response.accountId);
 			};
 
 			var getMatchHistory = function(summonerId) {	

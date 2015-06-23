@@ -4,14 +4,14 @@ angular.module("LeagueViewer").factory("lolapi", function($http) {
   var baseUrl = "http://localhost:3000/";
 
   var getSummoner = function(summonerName) {
-    return $http.get(baseUrl + 'summoner/' + summonerName)
+    return $http.get(baseUrl + 'summoner2/' + summonerName)
       .then(function(response) {
         return response.data;
       });
   };
 
   var getMatchHistory = function(summonerId) {
-    return $http.get(baseUrl + 'summoner/' + summonerId + '/matchHistory')
+    return $http.get(baseUrl + 'summoner2/' + summonerId + '/matchHistory')
       .then(function(response) {
         return response.data;
       });
