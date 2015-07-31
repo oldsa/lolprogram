@@ -17,6 +17,13 @@ angular.module("LeagueViewer").factory("lolapi", function($http) {
       });
   };
 
+  var getMatchHistory1 = function(summonerId) {
+    return $http.get(baseUrl + 'summoner3/' + summonerId + '/matchHistory')
+      .then(function(response) {
+        return response.data;
+      });
+  };
+
   var getMatch = function(matchId) {
     return $http.get(baseUrl + 'match/' + matchId)
       .then(function(response) {
@@ -41,6 +48,7 @@ angular.module("LeagueViewer").factory("lolapi", function($http) {
   return {
     getSummoner : getSummoner,
     getMatchHistory : getMatchHistory,
+    getMatchHistory1 : getMatchHistory1,
     getMatch : getMatch,
     getChamp : getChamp
   };

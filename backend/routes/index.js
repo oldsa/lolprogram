@@ -70,6 +70,23 @@ router.get('/summoner2/:summonerId/matchHistory', function(req, res, next) {
 	});
 });
 
+router.get('/summoner3/:summonerId/matchHistory', function(req, res, next) {
+	var res1 = '';
+	https.get("https://acs.leagueoflegends.com/v1/stats/player_history/NA1/" + req.params.summonerId + queries, function(response) { 
+		response.on('data', function(chunk) {
+		  res1 += chunk;
+		});
+
+		response.on('end', function() {
+			//saveData(res1);
+			res.send(res1);
+		});
+
+	}).on('error', function(e) {
+		console.error(e);
+	});
+});
+
 //GET MATCH-HISTORY
 router.get('/summoner/:summonerId/matchHistory', function(req, res, next) {
 	var res1 = '';
@@ -110,7 +127,7 @@ router.get('/match/:matchId', function(req, res, next) {
 //GET CHAMPION
 router.get('/champion/:championId', function(req, res, next) {
 	var res1 = '';
-	https.get(baseUrl + "static-data/na/v1.2/champion/" + req.params.champId + "?api_key=" + apiKey, function(response) {
+	https.get(baseUrl + "static-data/na/v1.2/champion/" + req.params.championId + "?api_key=" + apiKey, function(response) {
     
 		response.on('data', function(chunk) {
 		  res1 += chunk;
