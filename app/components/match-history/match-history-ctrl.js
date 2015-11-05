@@ -44,18 +44,18 @@ angular.module('LeagueViewer')
 			};
 
 			var onGetMatchHistorySuccess = function(response) {
-				if (response.httpStatus == "404"){
+				if (response.httpStatus == "404") {
 					lolapi.getMatchHistory1($scope.sumID).then(onGetMatchHistorySuccess, onGetMatchHistoryError);
 				}
-				else{
+				else {
 					$scope.checkfile = response;
-					$scope.summoner = $scope.checkfile.games.games[0].participantIdentities[0].player
-				angular.forEach($scope.checkfile.games.games, function(match) {
-					getChampionImage(match);					
-			  		$scope.totalSeconds = $scope.totalSeconds + match.gameDuration;
-			  		$scope.totalGoldEarned = $scope.totalGoldEarned + match.participants[0].stats.goldEarned;
-				});
-				$scope.haveResults = true;
+					$scope.summoner = $scope.checkfile.games.games[0].participantIdentities[0].player;
+					angular.forEach($scope.checkfile.games.games, function(match) {
+						getChampionImage(match);
+							$scope.totalSeconds = $scope.totalSeconds + match.gameDuration;
+							$scope.totalGoldEarned = $scope.totalGoldEarned + match.participants[0].stats.goldEarned;
+					});
+					$scope.haveResults = true;
 				}
 				
 			};

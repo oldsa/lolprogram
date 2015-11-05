@@ -178,8 +178,6 @@ var saveData = function(saveDataSchema, saveData) {
 		var silence = new Kitten({ name: 'Silence' });
 		console.log(silence.name);
 
-		var Kitten = mongoose.model('Kitten', kittySchema);
-
 		var fluffy = new Kitten({ 
 			name: 'fluffy',
 			test: 'test' 
@@ -194,10 +192,10 @@ var saveData = function(saveDataSchema, saveData) {
 		Kitten.find(function (err, kittens) {
 		  if (err) return console.error(err);
 		  console.log(kittens);
-		})
+		});
 		Kitten.find({ name: /^Fluff/ }, callback);
 	});
-}
+};
 
 module.exports = router;
 
