@@ -14,9 +14,28 @@ module.exports = function(grunt) {
         }
       }
     },
+    connect: {
+      server: {
+        options: {
+          livereload: true,
+          port: 8010,
+          base: ''
+        },
+      }
+    },
     watch: {
-      files: ['<%= jshint.files %>'],
-      tasks: ['jshint']
+      options: {
+        livereload: true,
+      },
+      html: {
+        files: ['index.html',
+          'app/**/*.html']
+      },
+      js: {
+        files: [
+          'app/**/*.js'
+        ]
+      }
     },
     karma: {  
       unit: {
@@ -41,9 +60,17 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-contrib-jshint');
   grunt.loadNpmTasks('grunt-karma');
   grunt.registerTask('build', ['jshint']);
+  grunt.loadNpmTasks('grunt-contrib-connect');
+  grunt.loadNpmTasks('grunt-contrib-watch');
+
 
   grunt.registerTask('test', [  
     'jshint',
     'karma'
+  ]);
+
+  grunt.registerTask('serve', [
+    'connect',
+    'watch'
   ]);
 };
