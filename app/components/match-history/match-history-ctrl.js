@@ -79,7 +79,11 @@ angular.module('LeagueViewer')
 				$scope.errorMessage = "Could not fetch Match History for given summoner.";
 			};
 
-			summonerSearch($routeParams.summonerName);
+			var init = function() {
+				summonerSearch($routeParams.summonerName);
+			};
+
+			init();
 		}
 	]
 );
