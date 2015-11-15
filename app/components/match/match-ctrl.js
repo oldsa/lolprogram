@@ -25,7 +25,7 @@ angular.module("LeagueViewer")
 			};
 
 			var init = function() {
-				$http.get('app/config/champions.json').
+				$http.get('app/assets/data/champions.json').
 				  success(function(data, status, headers, config) {
 				  	$scope.championImageMap = data.data;
 				  }).
