@@ -3,9 +3,10 @@ angular.module('LeagueViewer')
 	[
 		'$scope',
 		'$location',
-		'$routeParams',
-		'lolapi', 
-		function($scope, $location, $routeParams, lolapi) {
+		'lolapi',
+		'$stateParams',
+		'$state',
+		function($scope, $location, lolapi, $stateParams, $state) {
 
 			$scope.haveResults = false;
 			$scope.totalSeconds = 0;
@@ -14,17 +15,11 @@ angular.module('LeagueViewer')
 			$scope.errorMessage = "";
 			$scope.sumID = "";
 
-			$scope.summonerSearch = function(summonerName) {
-				$location.path('/matchHistory/'+  summonerName);
-			};
-
 			$scope.goTo = function(match) {
-				$location.path('/match/'+  match.gameId);
+				$state.go('main.match', {'matchId': match.gameId});
 			};
 
 			var summonerSearch = function(username) {
-				//summonerName = username;
-				//$location.path('/matchHistory/'+  username);
 				lolapi.getSummoner(username).then(summonerSearchSuccess, onGetSummonerSearchError);
 			};
 
@@ -33,8 +28,6 @@ angular.module('LeagueViewer')
 			};
 
 			var summonerSearchSuccess = function(response) {
-				//$scope.summoner = response[summonerName];
-				//$location.path('/matchHistory/'+  summonerInfo.id);
 				$scope.sumID = response.accountId;
 				getMatchHistory(response.accountId);
 			};
@@ -60,7 +53,7 @@ angular.module('LeagueViewer')
 				
 			};
 
-			var getChampionImage = function(match){
+			var getChampionImage = function(match) {
 				var promise = lolapi.getChamp(match.participants[0].championId);
 				promise.then(
 					function(response) {
@@ -80,7 +73,9 @@ angular.module('LeagueViewer')
 			};
 
 			var init = function() {
-				summonerSearch($routeParams.summonerName);
+				if ($stateParams.summonerName) {
+					summonerSearch($stateParams.summonerName);
+				}
 			};
 
 			init();

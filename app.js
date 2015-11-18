@@ -1,34 +1,23 @@
-(function(){
-  
-  var app = angular.module("LeagueViewer", ["ngRoute"]);
-  
-  app.config(function($routeProvider) {
-    $routeProvider
-      .when("/", {
-        templateUrl: "app/components/main/main.html",
-        controller: "MainController"
-      })
-      .when("/main", {
-        templateUrl: "app/components/main/main.html",
-        controller: "MainController"
-      })
-      .when("/matchHistory/:summonerName", {
-        templateUrl: "app/components/match-history/match-history.html",
-        controller: "MatchHistoryCtrl"
-      })
-      .when("/match/:matchId", {
-        templateUrl: "app/components/match/match.html",
-        controller: "MatchController"
-      })
-      /*.when("/currentgame/:currentGameId", {
-        templateUrl: "app/components/current-game/current-game.html",
-        controller: "CurrentGameCtrl"
-      })*/
-      .when("/rankedstats", {
-        templateUrl: "app/components/main/main.html",
-        controller: "MainController"
-      });
-      //.otherwise({redirectTo:"/main"});  
-  });
-  
-}());
+var routerApp = angular.module('LeagueViewer', ['ui.router']);
+
+routerApp.config(function($stateProvider, $urlRouterProvider) {
+
+  $urlRouterProvider.otherwise('/home');
+
+  $stateProvider
+    .state('main', {
+      url: '/home',
+      templateUrl: 'app/components/main/main.html',
+      controller: 'MainController'
+    })
+    .state('main.matchHistory', {
+      url: '/match-history/:summonerName',
+      templateUrl: 'app/components/match-history/match-history.html',
+      controller: 'MatchHistoryCtrl'
+    })
+    .state('main.match', {
+      url: '/match/:matchId',
+      templateUrl: 'app/components/match/match.html',
+      controller: 'MatchController'
+    });
+});

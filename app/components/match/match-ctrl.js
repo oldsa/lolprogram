@@ -5,14 +5,10 @@ angular.module("LeagueViewer")
 		'$http',
 		'$location',
 		'lolapi',
-		'$routeParams',		
-		function($scope, $http, $location, lolapi, $routeParams) {
+		'$stateParams',
+		function($scope, $http, $location, lolapi, $stateParams) {
 			$scope.championImageMap = {};
 			$scope.orderProp = '-stat.kills';
-
-			$scope.summonerSearch = function(summonerName) {
-				$location.path('/matchHistory/'+  summonerName);
-			};
 
 			$scope.setChampionImageUrl = function(participant) {
 				var championName = '';
@@ -32,7 +28,7 @@ angular.module("LeagueViewer")
 				  error(function(data, status, headers, config) {
 				  	console.log('could not get champions.json');
 				  });
-				lolapi.getMatch($routeParams.matchId).then(summonerMatchRecieved, onError);
+				lolapi.getMatch($stateParams.matchId).then(summonerMatchRecieved, onError);
 			};
 
 			var summonerMatchRecieved = function(matchInfo) {

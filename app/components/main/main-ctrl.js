@@ -3,11 +3,11 @@ angular.module('LeagueViewer')
 	[
 		'$scope',
 		'$location',
-		'$routeParams',
-		'lolapi', 
-		function($scope, $location, $routeParams, lolapi) {
+		'lolapi',
+		'$state',
+		function($scope, $location, lolapi, $state) {
 			$scope.summonerSearch = function(summonerName) {
-				$location.path('/matchHistory/'+  summonerName);
+				$state.go('main.matchHistory', {'summonerName': summonerName});
 			};
 		}
 	]
