@@ -64,7 +64,7 @@ module.exports = function(grunt) {
         dest: 'styles/build.scss'
       }
     },
-    sass: {                                 // Task
+    sass: {
       dist: {
         files: {
           'styles/build.css':'styles/build.scss'

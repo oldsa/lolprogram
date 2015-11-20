@@ -1,16 +1,17 @@
 <div class="match-history-content container-fluid">
 	<div class="summoner-bar" ng-if="haveResults">
-		<h1>Summoner: {{summoner.summonerName}}</h1>
-
-		<h3>Total time of matches: {{totalSeconds/60}} minutes</h3>
-		<h3>Total gold earned: {{totalGoldEarned}}</h3>
-		<h3>Average gold per minute for last {{checkfile.games.games.length}}: {{totalGoldEarned/totalSeconds*60}}</h3>
-		<h4>Stats for last {{checkfile.games.games.count}} match(s) played: </h4>
+		<div class="general-summoner-info">
+			<div class="summoner-name">Summoner: {{summoner.summonerName}}</div>
+			<div class="match-time">Total time of matches: {{totalSeconds/60}} minutes</div>
+			<div class="gold-earned">Total gold earned: {{totalGoldEarned}}</div>
+			<div class="gold-per-minute">Average gold per minute for last {{checkfile.games.games.length}}: {{totalGoldEarned/totalSeconds*60}}</div>
+		</div>
+		<div>Stats for last {{checkfile.games.games.count}} match(s) played: </div>
 		<div class="match-history-list">
 			<div class="match-history-game" ng-repeat = "match in checkfile.games.games | orderBy: match.gameCreation:reverse">
 				<div class="match-history-win-loss">
-					<h3 class="green" ng-show="{{match.participants[0].stats.win}}">W</h3>
-					<h3 class="red" ng-show="{{!match.participants[0].stats.win}}">L</h3>
+					<div class="green" ng-show="{{match.participants[0].stats.win}}">W</div>
+					<div class="red" ng-show="{{!match.participants[0].stats.win}}">L</div>
 				</div>
 				<div class="match-history-champion-image">
 					<img ng-src="{{match.participants[0].champImgSrc}}" title="{{match.participants[0].champName}}"/>
