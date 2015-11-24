@@ -31,3 +31,17 @@ a.gold {
 .match-history-win-loss {
 	padding: 20px;
 }
+
+
+.summoner-bar {
+	text-align: center;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+
+	.general-summoner-info {
+		font-size: 25px;
+		background-color: grey;
+		width: 600px;
+	}
+}

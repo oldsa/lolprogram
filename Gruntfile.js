@@ -55,6 +55,22 @@ module.exports = function(grunt) {
           ]
         }  
       }
+    },
+    concat: {
+      dist: {
+        src: [
+          'app/components/**/*.scss'
+        ],
+        dest: 'styles/build.scss'
+      }
+    },
+    sass: {
+      dist: {
+        files: {
+          'styles/build.css':'styles/build.scss'
+        }
+
+      }
     }
   });
 
@@ -63,7 +79,10 @@ module.exports = function(grunt) {
   grunt.registerTask('build', ['jshint']);
   grunt.loadNpmTasks('grunt-contrib-connect');
   grunt.loadNpmTasks('grunt-contrib-watch');
+  grunt.loadNpmTasks('grunt-contrib-sass');
+  grunt.loadNpmTasks('grunt-contrib-concat');
 
+  grunt.registerTask('buildcss', ['concat', 'sass']);
 
   grunt.registerTask('test', [  
     'jshint',
@@ -71,6 +90,7 @@ module.exports = function(grunt) {
   ]);
 
   grunt.registerTask('serve', [
+    'buildcss',
     'connect',
     'watch'
   ]);
