@@ -28,11 +28,11 @@ angular.module('LeagueViewer')
 			};
 
 			var summonerSearchSuccess = function(response) {
-				$scope.sumID = response.accountId;
+				$scope.sumID = response.accountId; //why need for this / maybe just make it accountId cuz thats what it is
 				getMatchHistory(response.accountId);
 			};
 
-			var getMatchHistory = function(summonerId) {	
+			var getMatchHistory = function(summonerId) {	//replace summonerId with accountId?
 				lolapi.getMatchHistory(summonerId).then(onGetMatchHistorySuccess, onGetMatchHistoryError);
 			};
 
@@ -50,7 +50,7 @@ angular.module('LeagueViewer')
 					});
 					$scope.haveResults = true;
 				}
-				
+
 			};
 
 			var getChampionImage = function(match) {
@@ -59,7 +59,7 @@ angular.module('LeagueViewer')
 					function(response) {
 						match.participants[0].champName = response.name;
 						match.participants[0].champImgSrc = "http://ddragon.leagueoflegends.com/cdn/5.2.1/img/champion/"+ match.participants[0].champName +".png";
-					}, 
+					},
 				  onGetChampionImageError
 			  );
 			};

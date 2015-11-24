@@ -32,7 +32,7 @@ router.use(function (req, res, next) {
 //GET SUMMONER
 router.get('/summoner/:summonerName', function(req, res, next) {
 	https.get(baseUrl + 'na/v1.4/summoner/by-name/' + req.params.summonerName + '?api_key=' + apiKey, function(response) {
-    
+
 		response.on('data', function(data) {
 		  res.send(data);
 		});
@@ -55,7 +55,7 @@ router.get('/summoner2/:summonerName', function(req, res, next) {
 //https://acs.leagueoflegends.com/v1/stats/player_history/NA/36526632
 router.get('/summoner2/:summonerId/matchHistory', function(req, res, next) {
 	var res1 = '';
-	https.get("https://acs.leagueoflegends.com/v1/stats/player_history/NA/" + req.params.summonerId + queries, function(response) { 
+	https.get("https://acs.leagueoflegends.com/v1/stats/player_history/NA/" + req.params.summonerId + queries, function(response) {
 		response.on('data', function(chunk) {
 		  res1 += chunk;
 		});
@@ -72,7 +72,7 @@ router.get('/summoner2/:summonerId/matchHistory', function(req, res, next) {
 
 router.get('/summoner3/:summonerId/matchHistory', function(req, res, next) {
 	var res1 = '';
-	https.get("https://acs.leagueoflegends.com/v1/stats/player_history/NA1/" + req.params.summonerId + queries, function(response) { 
+	https.get("https://acs.leagueoflegends.com/v1/stats/player_history/NA1/" + req.params.summonerId + queries, function(response) {
 		response.on('data', function(chunk) {
 		  res1 += chunk;
 		});
@@ -91,8 +91,27 @@ router.get('/summoner3/:summonerId/matchHistory', function(req, res, next) {
 router.get('/summoner/:summonerId/matchHistory', function(req, res, next) {
 	var res1 = '';
 	https.get(baseUrl + "na/v2.2/matchhistory/" + req.params.summonerId + "?api_key=" + apiKey, function(response) {
-    
+
 		response.on('data', function(chunk) {
+		  res1 += chunk;
+		});
+
+		response.on('end', function() {
+			saveData(res1);
+			res.send(res1);
+		});
+
+	}).on('error', function(e) {
+		console.error(e);
+	});
+});
+
+//GET SUMMONER RANKED-STATS
+router.get('/summoner/:summonerId/rankedStats', function(req, res, next) {
+  var res1 = '';
+	https.get(baseUrl + 'na/v1.3/stats/by-summoner/' + req.params.summonerId + '/ranked' + '?api_key=' + apiKey, function(response) {
+
+    response.on('data', function(chunk) {
 		  res1 += chunk;
 		});
 
@@ -110,7 +129,7 @@ router.get('/summoner/:summonerId/matchHistory', function(req, res, next) {
 router.get('/match/:matchId', function(req, res, next) {
 	var res1 = '';
 	https.get(baseUrl + "na/v2.2/match/" + req.params.matchId + "?api_key=" + apiKey, function(response) {
-    
+
 		response.on('data', function(chunk) {
 		  res1 += chunk;
 		});
@@ -128,7 +147,7 @@ router.get('/match/:matchId', function(req, res, next) {
 router.get('/champion/:championId', function(req, res, next) {
 	var res1 = '';
 	https.get(baseUrl + "static-data/na/v1.2/champion/" + req.params.championId + "?api_key=" + apiKey, function(response) {
-    
+
 		response.on('data', function(chunk) {
 		  res1 += chunk;
 		});
@@ -146,7 +165,7 @@ router.get('/champion/:championId', function(req, res, next) {
 router.get('/champion/:championId/rankedStats', function(req, res, next) {
 	var res1 = '';
 	https.get(baseUrl + "na/v2.2/match/" + req.params.championId + "?api_key=" + apiKey, function(response) {
-    
+
 		response.on('data', function(chunk) {
 		  res1 += chunk;
 		});
@@ -178,13 +197,13 @@ var saveData = function(saveDataSchema, saveData) {
 		var silence = new Kitten({ name: 'Silence' });
 		console.log(silence.name);
 
-		var fluffy = new Kitten({ 
+		var fluffy = new Kitten({
 			name: 'fluffy',
-			test: 'test' 
+			test: 'test'
 		});
 		//fluffy.speak(); // "Meow name is fluffy"
 
-		fluffy.save(function (err, fluffy) {	
+		fluffy.save(function (err, fluffy) {
 		  if (err) return console.error(err);
 		  //fluffy.speak();
 		});
@@ -198,4 +217,3 @@ var saveData = function(saveDataSchema, saveData) {
 };
 
 module.exports = router;
-

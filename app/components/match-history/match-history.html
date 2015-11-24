@@ -2,6 +2,8 @@
 	<div class="summoner-bar" ng-if="haveResults">
 		<h1>Summoner: {{summoner.summonerName}}</h1>
 
+		<h4 class="blue"><a ng-href="#/home/ranked-stats/{{summoner.summonerName}}">View ranked stats</h4></a>
+
 		<h3>Total time of matches: {{totalSeconds/60}} minutes</h3>
 		<h3>Total gold earned: {{totalGoldEarned}}</h3>
 		<h3>Average gold per minute for last {{checkfile.games.games.length}}: {{totalGoldEarned/totalSeconds*60}}</h3>
