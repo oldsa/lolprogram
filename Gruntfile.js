@@ -36,6 +36,15 @@ module.exports = function(grunt) {
           'app/**/*.js',
           'app.js'
         ]
+      },
+      css: {
+        files: [
+          '.tmp/styles/build.css'
+        ]
+      },
+      sass: {
+        files: 'app/**/*.scss',
+        tasks: ['buildcss']
       }
     },
     karma: {  
@@ -61,13 +70,13 @@ module.exports = function(grunt) {
         src: [
           'app/components/**/*.scss'
         ],
-        dest: 'styles/build.scss'
+        dest: '.tmp/styles/build.scss'
       }
     },
     sass: {
       dist: {
         files: {
-          'styles/build.css':'styles/build.scss'
+          '.tmp/styles/build.css':'.tmp/styles/build.scss'
         }
 
       }

@@ -17,17 +17,20 @@
 					<img ng-src="{{match.participants[0].champImgSrc}}" title="{{match.participants[0].champName}}"/>
 				</div>
 				<div class="match-history-date">
-					<div>Date:</div>
-					<div>{{match.gameCreation | date:'medium'}}</div>
+					<div class="date-label">Date:</div>
+					<div class="date-value">{{match.gameCreation | date:'medium'}}</div>
 				</div>
-				<div>{{match.gameDuration}} seconds {{match.participants[0].stats.goldEarned}} gold earned</div>
-				<div>
+				<div class="time-gold-value">
+					<div class="time">{{match.gameDuration}} seconds</div>
+					<div class="gold">{{match.participants[0].stats.goldEarned}} gold earned</div>
+				</div>
+				<div class="lane-info">
 					<div>Lane:</div>
 					<div>{{match.participants[0].timeline.lane}}</div>
 				</div>
-				<div>Gold per minute: <a class="gold">{{match.participants[0].stats.goldEarned/match.gameDuration*60}} </a></div>
-				<div>Kills: <a class="green">{{match.participants[0].stats.kills}}</a>Deaths: <a class="red">{{match.participants[0].stats.deaths}}</a> Assists <a class="blue">{{match.participants[0].stats.assists}}</a></div>
-				<div> Wards Placed: {{match.participants[0].stats.wardsPlaced}} Wards Killed: {{match.participants[0].stats.wardsKilled}}</div>
+				<div class="gold-stats">Gold per minute: <a class="gold">{{match.participants[0].stats.goldEarned/match.gameDuration*60}} </a></div>
+				<div class="kda-stats"><a class="green">{{match.participants[0].stats.kills}}</a>/<a class="red">{{match.participants[0].stats.deaths}}</a>/<a class="blue">{{match.participants[0].stats.assists}}</a></div>
+				<div class="ward-stats"> Wards Placed: {{match.participants[0].stats.wardsPlaced}} Wards Killed: {{match.participants[0].stats.wardsKilled}}</div>
 				<button ng-click="goTo(match)">More stats for this match</button>
 			</div>
 		</div>

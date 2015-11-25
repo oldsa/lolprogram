@@ -10,7 +10,7 @@ angular.module("LeagueViewer")
 			$scope.championImageMap = {};
 			$scope.orderProp = '-stat.kills';
 
-			$scope.setChampionImageUrl = function(participant) {
+			var setChampionImageUrl = function(participant) {
 				var championName = '';
 				for (var key in $scope.championImageMap) {
 					if ($scope.championImageMap[key].id == participant.championId) {
@@ -21,21 +21,31 @@ angular.module("LeagueViewer")
 			};
 
 			var init = function() {
-				$http.get('app/assets/data/champions.json').
-				  success(function(data, status, headers, config) {
-				  	$scope.championImageMap = data.data;
-				  }).
-				  error(function(data, status, headers, config) {
-				  	console.log('could not get champions.json');
-				  });
-				lolapi.getMatch($stateParams.matchId).then(summonerMatchRecieved, onError);
+				getChampionImages();
+				getMatchById($stateParams.matchId)
+						.then(summonerMatchReceived)
+						.catch(onError);
 			};
 
-			var summonerMatchRecieved = function(matchInfo) {
+			var getChampionImages = function() {
+				return $http.get('app/assets/data/champions.json')
+										.success(function(data) {
+											$scope.championImageMap = data.data;
+										})
+										.error(onError);
+			};
+
+			var getMatchById = function(matchId) {
+				return lolapi.getMatch(matchId).then(function(matchInfo) {
+					return matchInfo;
+				});
+			};
+
+			var summonerMatchReceived = function(matchInfo) {
 				$scope.match = matchInfo;
 				for (var i = 0; i < $scope.match.participants.length; i++) {
 					$scope.match.participants[i].summonerName = $scope.match.participantIdentities[i].player.summonerName;
-					$scope.setChampionImageUrl($scope.match.participants[i]);
+					setChampionImageUrl($scope.match.participants[i]);
 					if ($scope.match.participants[i].teamId === 100) {
 						$scope.match.participants[i].teamStyle = 'blue-team';
 					}
@@ -43,7 +53,6 @@ angular.module("LeagueViewer")
 						$scope.match.participants[i].teamStyle = 'red-team';
 					}
 				}
-				console.log('test');
 			};
 
 			var onError = function(error) {
