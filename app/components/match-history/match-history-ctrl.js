@@ -15,8 +15,12 @@ angular.module('LeagueViewer')
 			$scope.errorMessage = "";
 			$scope.sumID = "";
 
-			$scope.goTo = function(match) {
+			$scope.goToMatch = function(match) {
 				$state.go('main.match', {'matchId': match.gameId});
+			};
+
+			$scope.goToRankedStats = function(summonerName) {
+				$state.go('main.ranked-stats', {'summonerName': $stateParams.summonerName});
 			};
 
 			var summonerSearch = function(username) {

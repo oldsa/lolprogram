@@ -3,7 +3,10 @@
 
 		<div class="general-summoner-info">
 			<div class="summoner-name">Summoner: {{summoner.summonerName}}</div>
-			<h4 class="blue"><a ng-href="#/home/ranked-stats/{{summoner.summonerName}}">View ranked stats</h4></a>
+
+			<!-- <h4 class="blue"><a ng-href="#/home/ranked-stats/{{summoner.summonerName}}">View ranked stats</h4></a> -->
+			<button ng-click="goToRankedStats(summonerName)">More stats for this Summoner</button>
+
 			<div class="match-time">Total time of matches: {{totalSeconds/60}} minutes</div>
 			<div class="gold-earned">Total gold earned: {{totalGoldEarned}}</div>
 			<div class="gold-per-minute">Average gold per minute for last {{checkfile.games.games.length}}: {{totalGoldEarned/totalSeconds*60}}</div>
@@ -31,7 +34,7 @@
 				<div>Gold per minute: <a class="gold">{{match.participants[0].stats.goldEarned/match.gameDuration*60}} </a></div>
 				<div>Kills: <a class="green">{{match.participants[0].stats.kills}}</a>Deaths: <a class="red">{{match.participants[0].stats.deaths}}</a> Assists <a class="blue">{{match.participants[0].stats.assists}}</a></div>
 				<div> Wards Placed: {{match.participants[0].stats.wardsPlaced}} Wards Killed: {{match.participants[0].stats.wardsKilled}}</div>
-				<button ng-click="goTo(match)">More stats for this match</button>
+				<button ng-click="goToMatch(match)">More stats for this match</button>
 			</div>
 		</div>
 	</div>

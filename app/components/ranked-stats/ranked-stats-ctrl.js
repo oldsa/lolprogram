@@ -10,33 +10,23 @@ angular.module('LeagueViewer')
       var summonerName = $stateParams.summonerName;
       $scope.summonerName = summonerName;
 
-      var onGetSummoner1Error = function(reason) {
+      var onGetSummonerByNameError = function(reason) {
         $scope.errorMessage = 'Could not get Summoner Info';
       };
 
-      var getSummoner1 = function() {
-        lolapi.getSummoner1(summonerName).then(
+      var getSummonerByName = function() {
+        lolapi.getSummonerByName(summonerName).then(
           function(result) {
             console.log('test');
             $scope.summonerObject = result[summonerName];
             summonerId = $scope.summonerObject.id;
-            // getSummonerId(); summId
             getRankedInfo(summonerId);
 
           },
-          function(failure) {
-            console.log('fail');
-          }
+          onGetSummonerByNameError
         );
       };
 
-      // var getSummonerId = function(summonerId) {  summId
-      //   $scope.summonerId = summonerId;
-      //   console.log($scope.summonerId);
-      //   return $scope.summonerId;
-      // };
-
-      // $scope.summonerId = getSummoner1();  summId
       var getRankedInfo = function(summonerId) {
         lolapi.getRankedInfo(summonerId).then(
           function(result) {
@@ -45,9 +35,7 @@ angular.module('LeagueViewer')
             console.log("champions:", champions);
             getChampionInfo(champions);
           },
-          function(failure) {
-            console.log('fail');
-          }
+          onGetSummonerByNameError
         );
       };
 
@@ -58,10 +46,7 @@ angular.module('LeagueViewer')
       };
 
 
-      $scope.champions = getSummoner1();
-
-
-
+      $scope.champions = getSummonerByName();
 
     }
   ]);
