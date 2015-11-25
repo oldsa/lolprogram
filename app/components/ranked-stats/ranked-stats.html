@@ -1,0 +1,11 @@
+<h3>Summoner Name: {{summonerName}}</h3>
+
+
+
+<div ng-repeat = "champion in champions">
+    Champion Id: {{champion.id}}
+    Record: {{champion.stats.totalSessionsWon}} - {{champion.stats.totalSessionsLost}}
+    Kills: {{champion.stats.totalChampionKills}}
+    Assists: {{champion.stats.totalAssists}}
+    Deaths: {{champion.stats.totalDeathsPerSession}}
+</div>

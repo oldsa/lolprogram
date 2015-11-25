@@ -1,12 +1,18 @@
 <div class="match-history-content container-fluid">
 	<div class="summoner-bar" ng-if="haveResults">
+
 		<div class="general-summoner-info">
 			<div class="summoner-name">Summoner: {{summoner.summonerName}}</div>
+
+			<!-- <h4 class="blue"><a ng-href="#/home/ranked-stats/{{summoner.summonerName}}">View ranked stats</h4></a> -->
+			<button ng-click="goToRankedStats(summonerName)">More stats for this Summoner</button>
+
 			<div class="match-time">Total time of matches: {{totalSeconds/60}} minutes</div>
 			<div class="gold-earned">Total gold earned: {{totalGoldEarned}}</div>
 			<div class="gold-per-minute">Average gold per minute for last {{checkfile.games.games.length}}: {{totalGoldEarned/totalSeconds*60}}</div>
 		</div>
 		<div>Stats for last {{checkfile.games.games.count}} match(s) played: </div>
+
 		<div class="match-history-list">
 			<div class="match-history-game" ng-repeat = "match in checkfile.games.games | orderBy: match.gameCreation:reverse">
 				<div class="match-history-win-loss">
@@ -32,6 +38,7 @@
 				<div class="kda-stats"><a class="green">{{match.participants[0].stats.kills}}</a>/<a class="red">{{match.participants[0].stats.deaths}}</a>/<a class="blue">{{match.participants[0].stats.assists}}</a></div>
 				<div class="ward-stats"> Wards Placed: {{match.participants[0].stats.wardsPlaced}} Wards Killed: {{match.participants[0].stats.wardsKilled}}</div>
 				<button ng-click="goTo(match)">More stats for this match</button>
+
 			</div>
 		</div>
 	</div>

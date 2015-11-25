@@ -15,8 +15,12 @@ angular.module('LeagueViewer')
 			$scope.webTitle = "Summoner Information";
 			$scope.errorMessage = "";
 
-			$scope.goTo = function(match) {
+			$scope.goToMatch = function(match) {
 				$state.go('main.match', {'matchId': match.gameId});
+			};
+
+			$scope.goToRankedStats = function(summonerName) {
+				$state.go('main.ranked-stats', {'summonerName': $stateParams.summonerName});
 			};
 
 			var summonerSearch = function(username) {
@@ -26,7 +30,7 @@ angular.module('LeagueViewer')
 				});
 			};
 
-			var getMatchHistory = function(summonerId) {	
+			var getMatchHistory = function(summonerId) {
 				return lolapi.getMatchHistory(summonerId).then(function(results) {
 					return results;
 				});
@@ -47,7 +51,7 @@ angular.module('LeagueViewer')
 					});
 					$scope.haveResults = true;
 				}
-				
+
 			};
 
 			var getChampionImage = function(match) {
@@ -55,7 +59,7 @@ angular.module('LeagueViewer')
 					function(response) {
 						match.participants[0].champName = response.name;
 						match.participants[0].champImgSrc = "http://ddragon.leagueoflegends.com/cdn/5.2.1/img/champion/"+ match.participants[0].champName +".png";
-					}, 
+					},
 				  onGetChampionImageError
 			  );
 			};

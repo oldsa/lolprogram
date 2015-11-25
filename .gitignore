@@ -6,3 +6,5 @@ backend/node_modules/*
 npm-debug.log
 backend/npm-debug.log
 styles/
+.jshintrc
+.DS_Store

@@ -15,6 +15,11 @@ routerApp.config(function($stateProvider, $urlRouterProvider) {
       templateUrl: 'app/components/match-history/match-history.html',
       controller: 'MatchHistoryCtrl'
     })
+    .state('main.ranked-stats', {
+      url: '/ranked-stats/:summonerName',
+      templateUrl: 'app/components/ranked-stats/ranked-stats.html',
+      controller: 'RankedStatsCtrl'
+    })
     .state('main.match', {
       url: '/match/:matchId',
       templateUrl: 'app/components/match/match.html',

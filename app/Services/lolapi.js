@@ -3,6 +3,13 @@ var app = angular.module("LeagueViewer");
 angular.module("LeagueViewer").factory("lolapi", function($http) {
   var baseUrl = "http://localhost:3000/";
 
+  var getSummonerByName = function(summonerName) {
+    return $http.get(baseUrl + 'summoner/' + summonerName)
+      .then(function(response) {
+        return response.data;
+      });
+  };
+
   var getSummoner = function(summonerName) {
     return $http.get(baseUrl + 'summoner2/' + summonerName)
       .then(function(response) {
@@ -38,18 +45,20 @@ angular.module("LeagueViewer").factory("lolapi", function($http) {
     });
   };
 
-  var getRankedStats = function(championId) {
-    return $http.get(baseUrl + "champion/" + championId)
+  var getRankedInfo = function(summonerId) {
+    return $http.get(baseUrl + "summoner/"  + summonerId + '/rankedStats')
       .then(function(response) {
         return response.data;
-    });
+      });
   };
 
   return {
     getSummoner : getSummoner,
+    getSummonerByName : getSummonerByName,
     getMatchHistory : getMatchHistory,
     getMatchHistory1 : getMatchHistory1,
     getMatch : getMatch,
-    getChamp : getChamp
+    getChamp : getChamp,
+    getRankedInfo: getRankedInfo
   };
 });
