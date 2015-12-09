@@ -8,3 +8,4 @@ backend/npm-debug.log
 styles/
 .jshintrc
 .DS_Store
+.sass-cache/
