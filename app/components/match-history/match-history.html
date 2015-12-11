@@ -37,8 +37,7 @@
 				<div class="gold-stats">Gold per minute: <a class="gold">{{match.participants[0].stats.goldEarned/match.gameDuration*60}} </a></div>
 				<div class="kda-stats"><a class="green">{{match.participants[0].stats.kills}}</a>/<a class="red">{{match.participants[0].stats.deaths}}</a>/<a class="blue">{{match.participants[0].stats.assists}}</a></div>
 				<div class="ward-stats"> Wards Placed: {{match.participants[0].stats.wardsPlaced}} Wards Killed: {{match.participants[0].stats.wardsKilled}}</div>
-				<button ng-click="goTo(match)">More stats for this match</button>
-
+				<button ng-click="goToMatch(match)">More stats for this match</button>
 			</div>
 		</div>
 	</div>
