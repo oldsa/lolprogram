@@ -7,46 +7,38 @@ angular.module('LeagueViewer')
     '$state',
     function($scope, $location, lolapi, $stateParams, $state) {
 
-      var summonerName = $stateParams.summonerName;
-      $scope.summonerName = summonerName;
-
-      var onGetSummonerByNameError = function(reason) {
+      var onGetSummonerByNameError = function() {
         $scope.errorMessage = 'Could not get Summoner Info';
       };
 
-      var getSummonerByName = function() {
-        lolapi.getSummonerByName(summonerName).then(
+      var getSummonerIdByName = function(summonerName) {
+        return lolapi.getSummonerByName(summonerName).then(
           function(result) {
-            console.log('test');
             $scope.summonerObject = result[summonerName];
-            summonerId = $scope.summonerObject.id;
-            getRankedInfo(summonerId);
-
+            return $scope.summonerObject.id;
           },
           onGetSummonerByNameError
         );
       };
 
       var getRankedInfo = function(summonerId) {
-        lolapi.getRankedInfo(summonerId).then(
+        return lolapi.getRankedInfo(summonerId).then(
           function(result) {
-            console.log('test2');
-            var champions = result.champions;
-            console.log("champions:", champions);
-            getChampionInfo(champions);
+            $scope.champions = result.champions;
           },
           onGetSummonerByNameError
         );
       };
 
-      var getChampionInfo = function(champions) {
-        $scope.champions = champions;
-        console.log($scope.champions);
-        return $scope.champions;
-      };
+      var init = function() {
+        if ($stateParams.summonerName) {
+          getSummonerIdByName($stateParams.summonerName)
+            .then(getRankedInfo)
+            .catch(onGetSummonerByNameError);
+        }
+      }
 
-
-      $scope.champions = getSummonerByName();
+      init();
 
     }
   ]);
