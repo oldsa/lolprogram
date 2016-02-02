@@ -6,7 +6,8 @@
   "dependencies": {
     "angular": "1.2.x",
     "angular-mocks": "~1.2.x",
-    "jquery": "1.10.2"
+    "jquery": "1.10.2",
+    "lodash": "~4.2.0"
   },
   "resolutions": {
     "angular": "1.4.8",

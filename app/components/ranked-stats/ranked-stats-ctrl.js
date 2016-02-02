@@ -30,10 +30,17 @@ angular.module('LeagueViewer')
         );
       };
 
+      var createStats = function() {
+        _($scope.champions).forEach(function(champion) {
+          champion.stats.winPercentage = champion.stats.totalSessionsWon / (champion.stats.totalSessionsPlayed);
+        });
+      }
+
       var init = function() {
         if ($stateParams.summonerName) {
           getSummonerIdByName($stateParams.summonerName)
             .then(getRankedInfo)
+            .then(createStats)
             .catch(onGetSummonerByNameError);
         }
       }
