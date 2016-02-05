@@ -1,12 +1,33 @@
 <h3>Summoner Name: {{summonerName}}</h3>
 
 
+<table class="table">
+    <thead class="match-info-thead">
+    <tr>
 
-<div ng-repeat = "champion in champions">
-    Champion Id: {{champion.id}}
-    Record: {{champion.stats.totalSessionsWon}} - {{champion.stats.totalSessionsLost}}
-    Kills: {{champion.stats.totalChampionKills}}
-    Assists: {{champion.stats.totalAssists}}
-    Deaths: {{champion.stats.totalDeathsPerSession}}
-    Win percentage: {{champion.stats.winPercentage}}
-</div>
+        <th ng-click="orderProp='-id'">Champion</th>
+        <th ng-click="orderProp='-id'">Champ ID</th>
+        <th ng-click="orderProp='-stats.totalSessionsPlayed'">GP</th>
+        <th ng-click="orderProp='-stats.winPercentage'">Win PCT</th>
+        <th ng-click="orderProp='-stats.avgKills'">Kills</th>
+        <th ng-click="orderProp='-stats.avgDeaths'">Deaths</th>
+        <th ng-click="orderProp='-stats.avgAssists'">Assists</th>
+        <th ng-click="orderProp='-stats.kda'">KDA</th>
+
+    </tr>
+    </thead>
+    <tbody>
+    <tr ng-repeat="champion in champions | orderBy: orderProp">
+
+        <td>  <img ng-src="{{champion.championUrl}}"></td>
+        <td>  {{champion.id}}</td>
+        <td>  {{champion.stats.totalSessionsPlayed}}</td>
+        <td>  {{champion.stats.winPercentage}} %</td>
+        <td>  {{champion.stats.avgKills}}</td>
+        <td>  {{champion.stats.avgDeaths}} </td>
+        <td>  {{champion.stats.avgAssists}} </td>
+        <td>  {{champion.stats.kda}} </td>
+
+    </tr>
+    </tbody>
+</table>
