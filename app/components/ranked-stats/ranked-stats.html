@@ -9,9 +9,9 @@
         <th ng-click="orderProp='-id'">Champ ID</th>
         <th ng-click="orderProp='-stats.totalSessionsPlayed'">GP</th>
         <th ng-click="orderProp='-stats.winPercentage'">Win PCT</th>
-        <th ng-click="orderProp='-stats.totalChampionKills'">Kills</th>
-        <th ng-click="orderProp='-stats.DeathsPerSession'">Deaths</th>
-        <th ng-click="orderProp='-stats.totalAssists'">Assists</th>
+        <th ng-click="orderProp='-stats.avgKills'">Kills</th>
+        <th ng-click="orderProp='-stats.avgDeaths'">Deaths</th>
+        <th ng-click="orderProp='-stats.avgAssists'">Assists</th>
         <th ng-click="orderProp='-stats.kda'">KDA</th>
 
     </tr>
@@ -22,10 +22,10 @@
         <td>  <img ng-src="{{champion.championUrl}}"></td>
         <td>  {{champion.id}}</td>
         <td>  {{champion.stats.totalSessionsPlayed}}</td>
-        <td>  {{champion.stats.winPercentage}}  </td>
-        <td>  {{champion.stats.totalChampionKills}}</td>
-        <td>  {{champion.stats.totalDeathsPerSession}} </td>
-        <td>  {{champion.stats.totalAssists}} </td>
+        <td>  {{champion.stats.winPercentage}} %</td>
+        <td>  {{champion.stats.avgKills}}</td>
+        <td>  {{champion.stats.avgDeaths}} </td>
+        <td>  {{champion.stats.avgAssists}} </td>
         <td>  {{champion.stats.kda}} </td>
 
     </tr>

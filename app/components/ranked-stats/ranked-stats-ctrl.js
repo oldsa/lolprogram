@@ -44,12 +44,16 @@ angular.module('LeagueViewer')
         );
       };
 
-      var createStats = function() {
-        ($scope.champions).forEach(function(champion) {
-          champion.stats.winPercentage = (champion.stats.totalSessionsWon / (champion.stats.totalSessionsPlayed)).toFixed(2);
-          champion.stats.kda = ((champion.stats.totalChampionKills + champion.stats.totalAssists) / (champion.stats.totalDeathsPerSession)).toFixed(2);
-        });
-      };
+        var createStats;
+        createStats = function () {
+            ($scope.champions).forEach(function (champion) {
+                champion.stats.winPercentage = ((champion.stats.totalSessionsWon / (champion.stats.totalSessionsPlayed))*100).toFixed(2);
+                champion.stats.avgKills = (champion.stats.totalChampionKills / champion.stats.totalSessionsPlayed).toFixed(2);
+                champion.stats.avgDeaths = (champion.stats.totalDeathsPerSession / champion.stats.totalSessionsPlayed).toFixed(2);
+                champion.stats.avgAssists = (champion.stats.totalAssists / champion.stats.totalSessionsPlayed).toFixed(2);
+                champion.stats.kda = ((champion.stats.totalChampionKills + champion.stats.totalAssists) / (champion.stats.totalDeathsPerSession)).toFixed(2);
+            });
+        };
 
 
       var init = function() {
