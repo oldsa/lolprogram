@@ -14,6 +14,7 @@ angular.module('LeagueViewer')
 			$scope.totalGoldEarned = 0;
 			$scope.webTitle = "Summoner Information";
 			$scope.errorMessage = "";
+			$scope.matches = [];
 
 			$scope.goToMatch = function(match) {
 				$state.go('main.match', {'matchId': match.gameId});
@@ -24,14 +25,13 @@ angular.module('LeagueViewer')
 			};
 
 			var summonerSearch = function(username) {
-				return lolapi.getSummoner(username).then(function(summonerInfo) {
-					accountId = summonerInfo.accountId;
-					return summonerInfo.accountId;
+				return lolapi.getSummonerByName(username).then(function(summonerInfo) {
+					return summonerInfo.id;
 				});
 			};
 
 			var getMatchHistory = function(summonerId) {
-				return lolapi.getMatchHistory(summonerId).then(function(results) {
+				return lolapi.getMatchHistoryBySummonerId(summonerId).then(function(results) {
 					return results;
 				});
 			};
@@ -52,6 +52,23 @@ angular.module('LeagueViewer')
 					$scope.haveResults = true;
 				}
 
+			};
+
+			var getFirst20Matches = function(response) {
+				if (response.matches) {
+					var matchList = response.matches;
+					for (var i = 0; i < 40; i++) {
+						var matchId = response.matches[i].matchId;
+						getMatchAndSave(matchId);
+					}
+				}
+			};
+
+			var getMatchAndSave = function(matchId) {
+				lolapi.getMatch(matchId).then(function(match) {
+					$scope.matches.push(match);
+					$scope.haveResults = true;
+				});
 			};
 
 			var getChampionImage = function(match) {
@@ -81,7 +98,7 @@ angular.module('LeagueViewer')
 				if ($stateParams.summonerName) {
 					summonerSearch($stateParams.summonerName)
 							.then(getMatchHistory)
-							.then(getChampionImages)
+							.then(getFirst20Matches)
 							.catch(reportProblems);
 				}
 			};

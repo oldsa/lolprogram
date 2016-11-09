@@ -1,15 +1,28 @@
 var express = require('express');
-var router = express.Router();
-var http = require('http');
-
 var https = require('https');
+var Promise = require('promise');
 
-var apiKey = '1a417329-8a55-43cb-9262-928bff0ccec9';
+var router = express.Router();
+
+const mongoDbName = 'test';
+const mongoClient = require('mongodb').MongoClient;
+
 var baseUrl = 'https://na.api.pvp.net/api/lol/';
+var region = 'na';
 
-var queries = "?begIndex=0&endIndex=20&queue=0&queue=2&queue=4&queue=6&queue=7&queue=8&queue=9&queue=14&queue=16&queue=17&queue=25&queue=31&queue=32&queue=33&queue=41&queue=42&queue=52&queue=61&queue=65&queue=70&queue=73&queue=76&queue=78&queue=83&queue=91&queue=92&queue=93&queue=96&queue=98&queue=300";
+var apiKeys = [
+  '97cb5a96-660c-40f6-aee5-59c80b50beaf', //smokensleep
+  '593a8b66-8b3f-4900-99ca-f3c3a7b37229', //BIGLUIE
+  '1a417329-8a55-43cb-9262-928bff0ccec9', //tbroner
+  'RGAPI-234b29a1-86e5-44ec-a750-b8617e6c34f7', //shaumyethehomiea
+  'RGAPI-d69ec951-e1a4-4d1c-aab0-78378cd3e745', //mybigfatashe
+  'RGAPI-c2943d92-072d-449c-a426-8b56dc524a32', //bbotts
+  '8ffb0850-f422-4a36-acf2-b6905253c81e', //bbottles
+];
 
-/* GET home page. */
+var dbConnection;
+var rateLimitCount = 0;
+var apiRequestCount = 0;
 
 router.use(function(req, res, next) {
   // Website you wish to allow to connect
@@ -30,94 +43,31 @@ router.use(function(req, res, next) {
 });
 
 //GET SUMMONER
-router.get('/summoner/:summonerName', function(req, res, next) {
-  https.get(baseUrl + 'na/v1.4/summoner/by-name/' + req.params.summonerName + '?api_key=' + apiKey, function(response) {
+router.get('/summoner/:summonerName', function(req, res) {
+  var summonerName = req.params.summonerName;
+  var requestUrl = baseUrl + region + '/v1.4/summoner/by-name/' + summonerName + '?api_key=' + returnApiKey();
 
-    response.on('data', function(data) {
-      res.send(data);
-    });
+  var mongoQueryData = {
+    collectionName: 'summoners',
+    key: 'name',
+    value: summonerName
+  };
 
-  }).on('error', function(e) {
-    console.error(e);
-  });
-});
-
-router.get('/summoner2/:summonerName', function(req, res, next) {
-  https.get("https://acs.leagueoflegends.com/v1/players?name=" + req.params.summonerName + "&region=NA", function(response) {
-    response.on('data', function(data) {
-      res.send(data);
-    });
-  }).on('error', function(e) {
-    console.error(e);
-  });
-});
-
-//https://acs.leagueoflegends.com/v1/stats/player_history/NA/36526632
-router.get('/summoner2/:summonerId/matchHistory', function(req, res, next) {
-  var res1 = '';
-  https.get("https://acs.leagueoflegends.com/v1/stats/player_history/NA/" + req.params.summonerId + queries, function(response) {
-    response.on('data', function(chunk) {
-      res1 += chunk;
-    });
-
-    response.on('end', function() {
-      //saveData(res1);
-      res.send(res1);
-    });
-
-  }).on('error', function(e) {
-    console.error(e);
-  });
-});
-
-router.get('/summoner3/:summonerId/matchHistory', function(req, res, next) {
-  var res1 = '';
-  https.get("https://acs.leagueoflegends.com/v1/stats/player_history/NA1/" + req.params.summonerId + queries, function(response) {
-    response.on('data', function(chunk) {
-      res1 += chunk;
-    });
-
-    response.on('end', function() {
-      //saveData(res1);
-      res.send(res1);
-    });
-
-  }).on('error', function(e) {
-    console.error(e);
-  });
+  obtainData(requestUrl, mongoQueryData, res);
 });
 
 //GET MATCH-HISTORY
 router.get('/summoner/:summonerId/matchHistory', function(req, res, next) {
   var res1 = '';
-  https.get(baseUrl + "na/v2.2/matchhistory/" + req.params.summonerId + "?api_key=" + apiKey, function(response) {
-
+  var requestUrl = baseUrl + region + "/v2.2/matchlist/by-summoner/" + req.params.summonerId + "?api_key=" + returnApiKey();
+  https.get(requestUrl, function(response) {
     response.on('data', function(chunk) {
       res1 += chunk;
     });
 
     response.on('end', function() {
-      saveData(res1);
       res.send(res1);
-    });
-
-  }).on('error', function(e) {
-    console.error(e);
-  });
-});
-
-//GET SUMMONER RANKED-STATS
-router.get('/summoner/:summonerId/rankedStats', function(req, res, next) {
-  var res1 = '';
-  https.get(baseUrl + 'na/v1.3/stats/by-summoner/' + req.params.summonerId + '/ranked' + '?api_key=' + apiKey, function(response) {
-
-    response.on('data', function(chunk) {
-      res1 += chunk;
-    });
-
-    response.on('end', function() {
-      saveData(res1);
-      res.send(res1);
+      rateLimitCount = 0;
     });
 
   }).on('error', function(e) {
@@ -126,98 +76,212 @@ router.get('/summoner/:summonerId/rankedStats', function(req, res, next) {
 });
 
 // GET MATCH
-router.get('/match/:matchId', function(req, res, next) {
-  var res1 = '';
-  https.get(baseUrl + "na/v2.2/match/" + req.params.matchId + "?api_key=" + apiKey, function(response) {
+router.get('/match/:matchId', function(req, res) {
+  var matchId = req.params.matchId;
+  var requestUrl = baseUrl + region + "/v2.2/match/" + matchId + "?api_key=" + returnApiKey();
 
-    response.on('data', function(chunk) {
-      res1 += chunk;
-    });
+  var mongoQueryData = {
+    collectionName: 'matches',
+    key: 'matchId',
+    value: matchId
+  };
 
-    response.on('end', function() {
-      res.send(res1);
-    });
+  obtainData(requestUrl, mongoQueryData, res);
+});
 
-  }).on('error', function(e) {
-    console.error(e);
+// GET ALL MATCHES
+router.get('/match', function(req, res) {
+  var mongoCollectionName = 'matches';
+
+  getAllDataFromCollection(mongoCollectionName).then(function(results) {
+    res.send(results);
   });
 });
 
-//GET CHAMPION
-router.get('/champion/:championId', function(req, res, next) {
-  var res1 = '';
-  https.get(baseUrl + "static-data/na/v1.2/champion/" + req.params.championId + "?api_key=" + apiKey, function(response) {
+function makeRiotRequest(requestUrl, mongoQueryData, res) {
+  var responseData = '';
 
-    response.on('data', function(chunk) {
-      res1 += chunk;
+  https.get(requestUrl, function(response) {
+    response.on('data', function(data) {
+      responseData += data;
     });
 
     response.on('end', function() {
-      res.send(res1);
+      responseData = JSON.parse(responseData);
+
+      //Check for 429 Rate Limit Exceeded league
+      if (responseData.status) {
+        rateLimitCount = rateLimitCount + 1;
+        console.log('**********RATE LIMIT COUNT: ' + rateLimitCount + '***********');
+        res.status(429)
+        res.send('Rate limit exceeded');
+      } else {
+        if (mongoQueryData.collectionName === 'summoners') {
+          responseData = responseData[mongoQueryData.value];
+        }
+        insertRequestDataIntoMongo(mongoQueryData.collectionName, responseData).then(function() {
+          res.send(responseData);
+        });
+      }
     });
 
   }).on('error', function(e) {
-    console.error(e);
+    console.log(e);
   });
-});
+}
 
-//GET CHAMPION RANKED STATS
-router.get('/champion/:championId/rankedStats', function(req, res, next) {
-  var res1 = '';
-  https.get(baseUrl + "na/v2.2/match/" + req.params.championId + "?api_key=" + apiKey, function(response) {
-
-    response.on('data', function(chunk) {
-      res1 += chunk;
-    });
-
-    response.on('end', function() {
-      res.send(res1);
-    });
-
-  }).on('error', function(e) {
-    console.error(e);
+function obtainData(requestUrl, mongoQueryData, res) {
+  queryMongoWithQueryData(mongoQueryData).then(function(mongoData) {
+    if (mongoData) {
+      res.send(mongoData);
+    } else {
+      makeRiotRequest(requestUrl, mongoQueryData, res);
+    }
+  }).catch(function(err) {
+    console.log('returned an error: ' + err);
   });
-});
+}
 
-var saveData = function(saveDataSchema, saveData) {
-  var mongoose = require('mongoose');
-  mongoose.connect('mongodb://localhost/test');
-
-  var db = mongoose.connection;
-  db.on('error', console.error.bind(console, 'connection error:'));
-  db.once('open', function(callback) {
-    // yay!
-    var kittySchema = mongoose.Schema({
-      name: String,
-      test: String
-    });
-
-    var Kitten = mongoose.model('Kitten', kittySchema);
-
-    var silence = new Kitten({
-      name: 'Silence'
-    });
-    console.log(silence.name);
-
-    var fluffy = new Kitten({
-      name: 'fluffy',
-      test: 'test'
-    });
-    //fluffy.speak(); // "Meow name is fluffy"
-
-    fluffy.save(function(err, fluffy) {
-      if (err) return console.error(err);
-      //fluffy.speak();
-    });
-
-    Kitten.find(function(err, kittens) {
-      if (err) return console.error(err);
-      console.log(kittens);
-    });
-    Kitten.find({
-      name: /^Fluff/
-    }, callback);
+function init() {
+  connectToMongo("mongodb://localhost:27017/" + mongoDbName).then(function(db) {
+    console.log('connected to db!');
+    dbConnection = db;
+  }).catch(function(err) {
+    console.log('had an error :(: ' + err);
   });
-};
+}
+
+function connectToMongo(connectionUrl) {
+  return new Promise(function (fulfill, reject) {
+    mongoClient.connect(connectionUrl, function(err, db) {
+      if (!err) {
+        fulfill(db);
+      } else {
+        console.log('CONNECT FAIL');
+        reject(err);
+      }
+    });
+  });
+}
+
+function queryMongoWithQueryData(mongoQueryData) {
+  var mongoQueryObject = createMongoQueryObject(mongoQueryData);
+
+  return new Promise(function(fulfill, reject) {
+    var collection = dbConnection.collection(mongoQueryData.collectionName);
+    collection.findOne(mongoQueryObject, function(err, doc) {
+      if (err) {
+        console.log('QUERY ERROR: ' + err);
+        reject(err);
+      } else {
+        console.log('QUERY SUCCESS');
+        fulfill(doc);
+      }
+    });
+  })
+}
+
+function createMongoQueryObject(mongoQueryData) {
+  var searchObject = {};
+  if (mongoQueryData.collectionName === 'summoners') {
+    searchObject[mongoQueryData.key] = {
+      '$regex': mongoQueryData.value,
+      '$options': 'i'
+    }
+  } else {
+    searchObject[mongoQueryData.key] = mongoQueryData.value;
+  }
+  return searchObject;
+}
+
+function insertRequestDataIntoMongo(mongoCollectionName, value) {
+  return new Promise(function(fulfill, reject) {
+    var collection = dbConnection.collection(mongoCollectionName);
+    if (value.matchId) {
+      value.matchId = value.matchId.toString();
+    }
+    collection.insert(value, function(err) {
+      if (err) {
+        console.log('INSERT ERROR: ' + err);
+        reject(err);
+      } else {
+        fulfill();
+      }
+    });
+  });
+}
+
+function getAllDataFromCollection(mongoCollectionName) {
+  return new Promise(function (fulfill, reject) {
+    var collection = dbConnection.collection(mongoCollectionName);
+    collection.find().toArray(function(err, items) {
+      if (err) {
+        reject(err);
+      } else {
+        fulfill(items);
+      }
+    });
+  });
+}
+
+function returnApiKey() {
+  return apiKeys[apiRequestCount++ % apiKeys.length];
+}
+////GET SUMMONER RANKED-STATS
+//router.get('/summoner/:summonerId/rankedStats', function(req, res, next) {
+//  var res1 = '';
+//  https.get(baseUrl + 'na/v1.3/stats/by-summoner/' + req.params.summonerId + '/ranked' + '?api_key=' + apiKey, function(response) {
+//
+//    response.on('data', function(chunk) {
+//      res1 += chunk;
+//    });
+//
+//    response.on('end', function() {
+//      saveData(res1);
+//      res.send(res1);
+//    });
+//
+//  }).on('error', function(e) {
+//    console.error(e);
+//  });
+//});
+//
+////GET CHAMPION
+//router.get('/champion/:championId', function(req, res, next) {
+//  var res1 = '';
+//  https.get(baseUrl + "static-data/na/v1.2/champion/" + req.params.championId + "?api_key=" + apiKey, function(response) {
+//
+//    response.on('data', function(chunk) {
+//      res1 += chunk;
+//    });
+//
+//    response.on('end', function() {
+//      res.send(res1);
+//    });
+//
+//  }).on('error', function(e) {
+//    console.error(e);
+//  });
+//});
+//
+////GET CHAMPION RANKED STATS
+//router.get('/champion/:championId/rankedStats', function(req, res, next) {
+//  var res1 = '';
+//  https.get(baseUrl + "na/v2.2/match/" + req.params.championId + "?api_key=" + apiKey, function(response) {
+//
+//    response.on('data', function(chunk) {
+//      res1 += chunk;
+//    });
+//
+//    response.on('end', function() {
+//      res.send(res1);
+//    });
+//
+//  }).on('error', function(e) {
+//    console.error(e);
+//  });
+//});
+
+init();
 
 module.exports = router;

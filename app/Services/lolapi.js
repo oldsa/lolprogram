@@ -17,8 +17,8 @@ angular.module("LeagueViewer").factory("lolapi", function($http) {
       });
   };
 
-  var getMatchHistory = function(summonerId) {
-    return $http.get(baseUrl + 'summoner2/' + summonerId + '/matchHistory')
+  var getMatchHistoryBySummonerId = function(summonerId) {
+    return $http.get(baseUrl + 'summoner/' + summonerId + '/matchHistory')
       .then(function(response) {
         return response.data;
       });
@@ -52,13 +52,21 @@ angular.module("LeagueViewer").factory("lolapi", function($http) {
       });
   };
 
+  var getAllMatches = function() {
+    return $http.get(baseUrl + 'match')
+      .then(function(response) {
+        return response.data;
+      })
+  };
+
   return {
     getSummoner : getSummoner,
     getSummonerByName : getSummonerByName,
-    getMatchHistory : getMatchHistory,
+    getMatchHistoryBySummonerId: getMatchHistoryBySummonerId,
     getMatchHistory1 : getMatchHistory1,
     getMatch : getMatch,
     getChamp : getChamp,
-    getRankedInfo: getRankedInfo
+    getRankedInfo: getRankedInfo,
+    getAllMatches: getAllMatches
   };
 });

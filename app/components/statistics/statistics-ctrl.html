@@ -1,0 +1,7 @@
+<div ng-repeat = "stat in trueFalseStats">{{stat}}: {{results[stat]}}</div>
+<div ng-repeat = "stat in countingStats">{{stat}}: {{results[stat]}}</div>
+<button ng-click="getAllMatches()">All matches</button>
+<div>Out of {{getAllMatchesResults['matchCount']}} games</div>
+<div ng-repeat = "stat in trueFalseStats">{{stat}}: {{getAllMatchesResults[stat]}}%</div>
+<div ng-repeat = "stat in countingStats">{{stat}}: {{getAllMatchesResults[stat]}}</div>
+

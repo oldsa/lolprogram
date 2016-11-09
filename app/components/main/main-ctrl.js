@@ -7,7 +7,7 @@ angular.module('LeagueViewer')
 		'$state',
 		function($scope, $location, lolapi, $state) {
 			$scope.summonerSearch = function(summonerName) {
-				$state.go('main.matchHistory', {'summonerName': summonerName});
+				$state.go('main.statistics', {'summonerName': summonerName});
 			};
 		}
 	]

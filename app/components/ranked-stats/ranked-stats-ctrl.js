@@ -43,7 +43,7 @@ angular.module('LeagueViewer')
             .then(createStats)
             .catch(onGetSummonerByNameError);
         }
-      }
+      };
 
       init();
 

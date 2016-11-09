@@ -14,7 +14,7 @@
 		<div>Stats for last {{checkfile.games.games.count}} match(s) played: </div>
 
 		<div class="match-history-list">
-			<div class="match-history-game" ng-repeat = "match in checkfile.games.games | orderBy: match.gameCreation:reverse">
+			<div class="match-history-game" ng-repeat = "match in matches | orderBy: match.gameCreation:reverse">
 				<div class="match-history-win-loss">
 					<div class="green" ng-show="{{match.participants[0].stats.win}}">W</div>
 					<div class="red" ng-show="{{!match.participants[0].stats.win}}">L</div>

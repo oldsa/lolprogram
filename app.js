@@ -24,5 +24,10 @@ routerApp.config(function($stateProvider, $urlRouterProvider) {
       url: '/match/:matchId',
       templateUrl: 'app/components/match/match.html',
       controller: 'MatchController'
-    });
+    })
+    .state('main.statistics', {
+      url:'/statistics/:summonerName',
+      templateUrl: 'app/components/statistics/statistics-ctrl.html',
+      controller: 'StatisticsCtrl'
+    })
 });
