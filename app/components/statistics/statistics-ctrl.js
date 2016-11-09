@@ -7,8 +7,6 @@ angular.module('LeagueViewer')
       '$stateParams',
       '$state',
       function($scope, $location, lolapi, $stateParams, $state) {
-        var accountId;
-
         $scope.haveResults = false;
         $scope.totalSeconds = 0;
         $scope.totalGoldEarned = 0;
@@ -18,6 +16,13 @@ angular.module('LeagueViewer')
         $scope.countingResults = {};
         $scope.trueFalseStats = ['firstBaron', 'firstBlood', 'firstDragon', 'firstInhibitor', 'firstTower'];
         $scope.countingStats = ['towerKills', 'inhibitorKills', 'baronKills', 'dragonKills'];
+
+        $scope.allTeamRelevantStats = ['firstBaron', 'firstBlood', 'firstDragon', 'firstInhibitor', 'firstTower', 'towerKills', 'inhibitorKills', 'baronKills', 'dragonKills'];
+        $scope.allTeamRelevantStatsAggregatedResults  = {};
+
+        $scope.participantRelevantStats = ['visionWardsBoughtInGame', 'wardsPlaced', 'wardsKilled', 'totalTimeCrowdControlDealt', 'neutralMinionsKilledEnemyJungle'];
+        $scope.winningParticipantResults = {};
+        $scope.losingParticipantResults = {};
 
         var summonerSearch = function(username) {
           return lolapi.getSummonerByName(username).then(function(summonerInfo) {
@@ -31,28 +36,9 @@ angular.module('LeagueViewer')
           });
         };
 
-        var getChampionImages = function(response) {
-          if (response.httpStatus == "404") {
-            //TODO: need to not have this call its own callback
-            lolapi.getMatchHistory1(accountId).then(getChampionImages, onGetMatchHistoryError);
-          }
-          else {
-            $scope.checkfile = response;
-            $scope.summoner = $scope.checkfile.games.games[0].participantIdentities[0].player;
-            angular.forEach($scope.checkfile.games.games, function(match) {
-              getChampionImage(match);
-              $scope.totalSeconds = $scope.totalSeconds + match.gameDuration;
-              $scope.totalGoldEarned = $scope.totalGoldEarned + match.participants[0].stats.goldEarned;
-            });
-            $scope.haveResults = true;
-          }
-
-        };
-
-        var getFirst20Matches = function(response) {
+        var getMatches = function(response) {
           if (response.matches) {
-            var matchList = response.matches;
-            for (var i = 0; i < 100; i++) {
+            for (var i = 0; i < $scope.matchCount; i++) {
               var matchId = response.matches[i].matchId;
               getMatchAndSave(matchId);
             }
@@ -61,10 +47,79 @@ angular.module('LeagueViewer')
 
         var getMatchAndSave = function(matchId) {
           lolapi.getMatch(matchId).then(function(match) {
-            console.log(match);
-            getWinningTeamValues(match, $scope.results);
+            analyzeAndRecordMatchStatisticsByTeam(match);
+            analyzeAndRecordMatchStatisticsByParticipant(match);
           });
         };
+
+        function analyzeAndRecordMatchStatisticsByParticipant(match) {
+          var matchParticipants = match.participants;
+          matchParticipants.forEach(function(participant) {
+            if (participant.participantId <= 5) {
+              //LOSING TEAM
+              $scope.participantRelevantStats.forEach(function(stat) {
+                if ($scope.losingParticipantResults[stat]) {
+                  $scope.losingParticipantResults[stat] += participant.stats[stat];
+                } else {
+                  $scope.losingParticipantResults[stat] = participant.stats[stat];
+                }
+              });
+            } else {
+              //WINNING TEAM
+              $scope.participantRelevantStats.forEach(function(stat) {
+                if ($scope.winningParticipantResults[stat]) {
+                  $scope.winningParticipantResults[stat] += participant.stats[stat];
+                } else {
+                  $scope.winningParticipantResults[stat] = participant.stats[stat];
+                }
+              });
+            }
+          });
+        }
+
+        function analyzeAndRecordMatchStatisticsByTeam(match) {
+          var winningTeam, losingTeam;
+          if (match.teams[0].winner) {
+            winningTeam = match.teams[0];
+            losingTeam = match.teams[1];
+          } else {
+            winningTeam = match.teams[1];
+            losingTeam = match.teams[0];
+          }
+
+          $scope.allTeamRelevantStats.forEach(function(stat) {
+            if ($scope.allTeamRelevantStatsAggregatedResults[stat]) {
+              $scope.allTeamRelevantStatsAggregatedResults[stat] += Number(winningTeam[stat]);
+            } else {
+              $scope.allTeamRelevantStatsAggregatedResults[stat] = Number(winningTeam[stat]);
+            }
+          });
+        }
+
+        var reportProblems = function(error) {
+          console.log(error);
+          $scope.errorMessage = "Could not fetch Match History for given summoner.";
+        };
+
+        function summonerSearchAndDisplayData(summonerName) {
+          summonerSearch(summonerName)
+            .then(getMatchHistory)
+            .then(getMatches)
+            .catch(reportProblems);
+        }
+
+        function init() {
+          $scope.matchCount = $stateParams.matchCount ? $stateParams.matchCount : 40;
+          if ($stateParams.summonerName) {
+            $scope.summonerName = $stateParams.summonerName;
+            summonerSearchAndDisplayData($stateParams.summonerName);
+          }
+        }
+
+        $scope.summonerSearch = function() {
+          $state.go('statistics', {'summonerName': $scope.summonerName, 'matchCount': $scope.matchCount});
+        };
+
 
         function getWinningTeamValues(match, results) {
           var winningTeam;
@@ -94,30 +149,6 @@ angular.module('LeagueViewer')
           }
         }
 
-        var onGetMatchHistoryError = function(error) {
-          $scope.errorMessage = "Could not fetch Match History for given summoner.";
-        };
-
-        var reportProblems = function(error) {
-          console.log(error);
-          $scope.errorMessage = "Could not fetch Match History for given summoner.";
-        };
-
-        var init = function() {
-          if ($stateParams.summonerName) {
-            summonerSearch($stateParams.summonerName)
-              .then(getMatchHistory)
-              .then(getFirst20Matches)
-              .catch(reportProblems);
-          }
-          //lolapi.getAllMatches()
-          //  .then(function(valuesReturned) {
-          //    console.log(valuesReturned);
-          //    //$scope.allResults = valuesReturned;
-          //    for ()
-          //  });
-        };
-
         $scope.getAllMatches = function() {
           $scope.getAllMatchesResults = {};
 
@@ -134,7 +165,10 @@ angular.module('LeagueViewer')
                   $scope.getAllMatchesResults[datapoint] = $scope.getAllMatchesResults[datapoint] / $scope.getAllMatchesResults['matchCount'];
                 }
               }
+              console.log($scope.getAllMatchesResults);
+
             });
+
         };
 
         init();

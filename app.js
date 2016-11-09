@@ -25,8 +25,8 @@ routerApp.config(function($stateProvider, $urlRouterProvider) {
       templateUrl: 'app/components/match/match.html',
       controller: 'MatchController'
     })
-    .state('main.statistics', {
-      url:'/statistics/:summonerName',
+    .state('statistics', {
+      url:'/statistics/:summonerName?matchCount',
       templateUrl: 'app/components/statistics/statistics-ctrl.html',
       controller: 'StatisticsCtrl'
     })

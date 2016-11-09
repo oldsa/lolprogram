@@ -66,6 +66,10 @@ router.get('/summoner/:summonerId/matchHistory', function(req, res, next) {
     });
 
     response.on('end', function() {
+      if (res1.status) {
+        res.status(429);
+        res.send('rate limit exceeded');
+      }
       res.send(res1);
       rateLimitCount = 0;
     });
