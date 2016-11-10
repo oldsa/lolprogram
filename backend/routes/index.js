@@ -178,7 +178,7 @@ function queryMongoWithQueryData(mongoQueryData) {
         console.log('QUERY ERROR: ' + err);
         reject(err);
       } else {
-        console.log('QUERY SUCCESS');
+        //console.log('QUERY SUCCESS');
         fulfill(doc);
       }
     });

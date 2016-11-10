@@ -5,18 +5,21 @@
   <title>My HTML File</title>
   <link href="dist/styles/test.css" rel="stylesheet" media="screen">
 
+  <!--OUTSIDE EPENDENCIES-->
   <script src="bower_components/angular/angular.js"></script>
   <script src="node_modules/angular-ui-router/release/angular-ui-router.js"></script>
   <script src="bower_components/jquery/jquery.min.js"></script>
   <script src="app.js"></script>
-  <script src="app/Services/lolapi.js"></script>
   <script src="bower_components/lodash/lodash.js"></script>
 
-  <script src="app/components/main/main-ctrl.js"></script>
+  <!--SERVICES-->
+  <script src="app/services/lolapi.js"></script>
+  <script src="app/services/analyze-match.js"></script>
 
+  <!--COMPONENTS-->
+  <script src="app/components/main/main-ctrl.js"></script>
   <script src="app/components/ranked-stats/ranked-stats-ctrl.js"></script>
   <script src="app/components/match/match-ctrl.js"></script>
-
   <script src="app/components/match-history/match-history-ctrl.js"></script>
   <script src="app/components/statistics/statistics-ctrl.js"></script>
 </head>

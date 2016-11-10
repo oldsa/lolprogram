@@ -5,12 +5,14 @@
     <input class="search-bar-botton" type="submit" value="Search" ng-click="summonerSearch()" />
   </form>
 </div>
-<div>Out of {{matchCount}} matches</div>
-<div ng-repeat = "stat in allTeamRelevantStats">{{stat}}: {{allTeamRelevantStatsAggregatedResults[stat] / matchCount}}</div>
-<div>WINNING TEAM</div>
-<div ng-repeat = "stat in participantRelevantStats">{{stat}}: {{winningParticipantResults[stat] / matchCount}}</div>
-<div>LOSING TEAM</div>
-<div ng-repeat = "stat in participantRelevantStats">{{stat}}: {{losingParticipantResults[stat] / matchCount}}</div>
+<div class="search-results" ng-if="doneProcessing">
+  <div>Out of {{previousSearchMatchCount}} matches</div>
+  <div ng-repeat = "stat in teamRelevantStats">{{stat}}: {{teamRelevantStatsAggregatedResults[stat] / previousSearchMatchCount}}</div>
+  <div>WINNING TEAM</div>
+  <div ng-repeat = "stat in participantRelevantStats">{{stat}}: {{winningParticipantResults[stat] / previousSearchMatchCount}}</div>
+  <div>LOSING TEAM</div>
+  <div ng-repeat = "stat in participantRelevantStats">{{stat}}: {{losingParticipantResults[stat] / previousSearchMatchCount}}</div>
+</div>
 
 <!--<button ng-click="getAllMatches()">All matches</button>-->
 <!--<div>Out of {{getAllMatchesResults['matchCount']}} games</div>-->

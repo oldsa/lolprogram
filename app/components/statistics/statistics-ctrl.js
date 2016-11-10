@@ -6,23 +6,23 @@ angular.module('LeagueViewer')
       'lolapi',
       '$stateParams',
       '$state',
-      function($scope, $location, lolapi, $stateParams, $state) {
-        $scope.haveResults = false;
-        $scope.totalSeconds = 0;
-        $scope.totalGoldEarned = 0;
+      'analyzeMatch',
+      '$q',
+      function($scope, $location, lolapi, $stateParams, $state, analyzeMatch, $q) {
         $scope.webTitle = "Summoner Information";
         $scope.errorMessage = "";
+        $scope.doneProcessing = false;
 
-        $scope.countingResults = {};
         $scope.trueFalseStats = ['firstBaron', 'firstBlood', 'firstDragon', 'firstInhibitor', 'firstTower'];
         $scope.countingStats = ['towerKills', 'inhibitorKills', 'baronKills', 'dragonKills'];
 
-        $scope.allTeamRelevantStats = ['firstBaron', 'firstBlood', 'firstDragon', 'firstInhibitor', 'firstTower', 'towerKills', 'inhibitorKills', 'baronKills', 'dragonKills'];
-        $scope.allTeamRelevantStatsAggregatedResults  = {};
-
+        $scope.teamRelevantStats  = ['firstBaron', 'firstBlood', 'firstDragon', 'firstInhibitor', 'firstTower', 'towerKills', 'inhibitorKills', 'baronKills', 'dragonKills'];
+        $scope.teamRelevantStatsAggregatedResults   = {};
         $scope.participantRelevantStats = ['visionWardsBoughtInGame', 'wardsPlaced', 'wardsKilled', 'totalTimeCrowdControlDealt', 'neutralMinionsKilledEnemyJungle'];
         $scope.winningParticipantResults = {};
         $scope.losingParticipantResults = {};
+
+        $scope.previousSearchMatchCount;
 
         var summonerSearch = function(username) {
           return lolapi.getSummonerByName(username).then(function(summonerInfo) {
@@ -37,63 +37,35 @@ angular.module('LeagueViewer')
         };
 
         var getMatches = function(response) {
+          var promiseArray = [];
           if (response.matches) {
             for (var i = 0; i < $scope.matchCount; i++) {
               var matchId = response.matches[i].matchId;
-              getMatchAndSave(matchId);
+              var deferred = $q.defer();
+
+              promiseArray.push(deferred.promise);
+              getMatchAndSave(matchId, deferred);
             }
           }
+          $q.all(promiseArray).then(function() {
+            $scope.doneProcessing = true;
+          });
         };
 
-        var getMatchAndSave = function(matchId) {
+        var getMatchAndSave = function(matchId, promise) {
           lolapi.getMatch(matchId).then(function(match) {
             analyzeAndRecordMatchStatisticsByTeam(match);
             analyzeAndRecordMatchStatisticsByParticipant(match);
+            promise.resolve();
           });
         };
 
         function analyzeAndRecordMatchStatisticsByParticipant(match) {
-          var matchParticipants = match.participants;
-          matchParticipants.forEach(function(participant) {
-            if (participant.participantId <= 5) {
-              //LOSING TEAM
-              $scope.participantRelevantStats.forEach(function(stat) {
-                if ($scope.losingParticipantResults[stat]) {
-                  $scope.losingParticipantResults[stat] += participant.stats[stat];
-                } else {
-                  $scope.losingParticipantResults[stat] = participant.stats[stat];
-                }
-              });
-            } else {
-              //WINNING TEAM
-              $scope.participantRelevantStats.forEach(function(stat) {
-                if ($scope.winningParticipantResults[stat]) {
-                  $scope.winningParticipantResults[stat] += participant.stats[stat];
-                } else {
-                  $scope.winningParticipantResults[stat] = participant.stats[stat];
-                }
-              });
-            }
-          });
+          analyzeMatch.parseParticipantDataAndUpdateWinnerLoserHash(match, $scope.participantRelevantStats, $scope.winningParticipantResults, $scope.losingParticipantResults);
         }
 
         function analyzeAndRecordMatchStatisticsByTeam(match) {
-          var winningTeam, losingTeam;
-          if (match.teams[0].winner) {
-            winningTeam = match.teams[0];
-            losingTeam = match.teams[1];
-          } else {
-            winningTeam = match.teams[1];
-            losingTeam = match.teams[0];
-          }
-
-          $scope.allTeamRelevantStats.forEach(function(stat) {
-            if ($scope.allTeamRelevantStatsAggregatedResults[stat]) {
-              $scope.allTeamRelevantStatsAggregatedResults[stat] += Number(winningTeam[stat]);
-            } else {
-              $scope.allTeamRelevantStatsAggregatedResults[stat] = Number(winningTeam[stat]);
-            }
-          });
+          analyzeMatch.parseTeamDataAndUpdateWinnerHash(match, $scope.teamRelevantStats , $scope.teamRelevantStatsAggregatedResults );
         }
 
         var reportProblems = function(error) {
@@ -102,6 +74,7 @@ angular.module('LeagueViewer')
         };
 
         function summonerSearchAndDisplayData(summonerName) {
+          $scope.previousSearchMatchCount = $scope.matchCount;
           summonerSearch(summonerName)
             .then(getMatchHistory)
             .then(getMatches)
