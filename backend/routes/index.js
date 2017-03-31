@@ -7,14 +7,13 @@ var router = express.Router();
 const mongoDbName = 'test';
 const mongoClient = require('mongodb').MongoClient;
 
-var baseUrl = 'https://na.api.pvp.net/api/lol/';
+var baseUrl = 'https://na.api.pvp.net/api/lol';
 var region = 'na';
 
 var apiKeys = [
   '97cb5a96-660c-40f6-aee5-59c80b50beaf', //smokensleep
   '593a8b66-8b3f-4900-99ca-f3c3a7b37229', //BIGLUIE
   '1a417329-8a55-43cb-9262-928bff0ccec9', //tbroner
-  'RGAPI-234b29a1-86e5-44ec-a750-b8617e6c34f7', //shaumyethehomiea
   'RGAPI-d69ec951-e1a4-4d1c-aab0-78378cd3e745', //mybigfatashe
   'RGAPI-c2943d92-072d-449c-a426-8b56dc524a32', //bbotts
   '8ffb0850-f422-4a36-acf2-b6905253c81e', //bbottles
@@ -22,11 +21,15 @@ var apiKeys = [
 
 var dbConnection;
 var rateLimitCount = 0;
-var apiRequestCount = 0;
+var apiRequestCount = generateRandomNumber(0, apiKeys.length - 1);
+
+function generateRandomNumber(min, max) {
+  return Math.floor(Math.random() * (max - min + 1)) + min;
+}
 
 router.use(function(req, res, next) {
   // Website you wish to allow to connect
-  res.setHeader('Access-Control-Allow-Origin', 'http://localhost:8010');
+  res.setHeader('Access-Control-Allow-Origin', '*');
 
   // Request methods you wish to allow
   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
@@ -44,8 +47,9 @@ router.use(function(req, res, next) {
 
 //GET SUMMONER
 router.get('/summoner/:summonerName', function(req, res) {
+  console.log('GET SUMMONER HIT!');
   var summonerName = req.params.summonerName;
-  var requestUrl = baseUrl + region + '/v1.4/summoner/by-name/' + summonerName + '?api_key=' + returnApiKey();
+  var requestUrl = `${baseUrl}/${region}/v1.4/summoner/by-name/${summonerName}?api_key=${returnApiKey()}`;
 
   var mongoQueryData = {
     collectionName: 'summoners',
@@ -59,30 +63,38 @@ router.get('/summoner/:summonerName', function(req, res) {
 //GET MATCH-HISTORY
 router.get('/summoner/:summonerId/matchHistory', function(req, res, next) {
   var res1 = '';
-  var requestUrl = baseUrl + region + "/v2.2/matchlist/by-summoner/" + req.params.summonerId + "?api_key=" + returnApiKey();
+  //var requestUrl = `this is a test`;
+  var requestUrl = `${baseUrl}/${region}/v2.2/matchlist/by-summoner/${req.params.summonerId}?api_key=${returnApiKey()}`;
+  console.log(`query parameter season: ${req.query.season}`);
   https.get(requestUrl, function(response) {
     response.on('data', function(chunk) {
       res1 += chunk;
     });
 
     response.on('end', function() {
-      if (res1.status) {
+      var jsonResponse = JSON.parse(res1);
+      if (jsonResponse.status) {
         res.status(429);
-        res.send('rate limit exceeded');
+        res.send('Rate limit exceeded');
+      } else {
+        if (req.query.season) {
+          filterMatchHistoryBySeason(jsonResponse, req.query);
+        }
+        res.send(JSON.stringify(jsonResponse));
+        rateLimitCount = 0;
       }
-      res.send(res1);
-      rateLimitCount = 0;
     });
 
-  }).on('error', function(e) {
-    console.error(e);
   });
+  //.on('error', function(e) {
+  //  console.error(e);
+  //});
 });
 
 // GET MATCH
 router.get('/match/:matchId', function(req, res) {
   var matchId = req.params.matchId;
-  var requestUrl = baseUrl + region + "/v2.2/match/" + matchId + "?api_key=" + returnApiKey();
+  var requestUrl = `${baseUrl}/${region}/v2.2/match/${matchId}?api_key=${returnApiKey()}`;
 
   var mongoQueryData = {
     collectionName: 'matches',
@@ -178,7 +190,6 @@ function queryMongoWithQueryData(mongoQueryData) {
         console.log('QUERY ERROR: ' + err);
         reject(err);
       } else {
-        //console.log('QUERY SUCCESS');
         fulfill(doc);
       }
     });
@@ -229,62 +240,23 @@ function getAllDataFromCollection(mongoCollectionName) {
 }
 
 function returnApiKey() {
-  return apiKeys[apiRequestCount++ % apiKeys.length];
+  var currentApiKey = apiRequestCount++ % apiKeys.length;
+  console.log(currentApiKey);
+  return apiKeys[currentApiKey];
 }
-////GET SUMMONER RANKED-STATS
-//router.get('/summoner/:summonerId/rankedStats', function(req, res, next) {
-//  var res1 = '';
-//  https.get(baseUrl + 'na/v1.3/stats/by-summoner/' + req.params.summonerId + '/ranked' + '?api_key=' + apiKey, function(response) {
-//
-//    response.on('data', function(chunk) {
-//      res1 += chunk;
-//    });
-//
-//    response.on('end', function() {
-//      saveData(res1);
-//      res.send(res1);
-//    });
-//
-//  }).on('error', function(e) {
-//    console.error(e);
-//  });
-//});
-//
-////GET CHAMPION
-//router.get('/champion/:championId', function(req, res, next) {
-//  var res1 = '';
-//  https.get(baseUrl + "static-data/na/v1.2/champion/" + req.params.championId + "?api_key=" + apiKey, function(response) {
-//
-//    response.on('data', function(chunk) {
-//      res1 += chunk;
-//    });
-//
-//    response.on('end', function() {
-//      res.send(res1);
-//    });
-//
-//  }).on('error', function(e) {
-//    console.error(e);
-//  });
-//});
-//
-////GET CHAMPION RANKED STATS
-//router.get('/champion/:championId/rankedStats', function(req, res, next) {
-//  var res1 = '';
-//  https.get(baseUrl + "na/v2.2/match/" + req.params.championId + "?api_key=" + apiKey, function(response) {
-//
-//    response.on('data', function(chunk) {
-//      res1 += chunk;
-//    });
-//
-//    response.on('end', function() {
-//      res.send(res1);
-//    });
-//
-//  }).on('error', function(e) {
-//    console.error(e);
-//  });
-//});
+
+//INPUT: data: MatchHistory JSON Object
+//       queryParams: Request's query parmaters
+//OUTPUT: filtered MatchHistory Object based on season
+function filterMatchHistoryBySeason(data, queryParams) {
+  var matchArray = data.matches;
+  var filtered = matchArray.filter(filterQueryParams);
+
+  function filterQueryParams(match) {
+    return queryParams.season ? match.season === queryParams.season : true;
+  }
+  data.matches = filtered;
+}
 
 init();
 
