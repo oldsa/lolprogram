@@ -12,6 +12,7 @@ angular.module('LeagueViewer')
         $scope.webTitle = "Summoner Information";
         $scope.errorMessage = "";
         $scope.doneProcessing = false;
+        $scope.currentSummoner = {};
 
         $scope.trueFalseStats = ['firstBaron', 'firstBlood', 'firstDragon', 'firstInhibitor', 'firstTower'];
         $scope.countingStats = ['towerKills', 'inhibitorKills', 'baronKills', 'dragonKills'];
@@ -22,15 +23,20 @@ angular.module('LeagueViewer')
         $scope.winningParticipantResults = {};
         $scope.losingParticipantResults = {};
 
+        $scope.individualRelevantStats = ['firstBloodKill', 'firstBloodAssist', 'firstTowerKill', 'firstTowerAssist', 'wardsPlaced', 'visionWardsBoughtInGame', 'wardsKilled'];
+        $scope.individualResults = {};
+
         $scope.previousSearchMatchCount;
 
         var summonerSearch = function(username) {
+          $scope.currentSummoner.name = username;
           return lolapi.getSummonerByName(username).then(function(summonerInfo) {
             return summonerInfo.id;
           });
         };
 
         var getMatchHistory = function(summonerId) {
+          $scope.currentSummoner.id = summonerId;
           return lolapi.getMatchHistoryBySummonerId(summonerId).then(function(results) {
             return results;
           });
@@ -56,8 +62,13 @@ angular.module('LeagueViewer')
           lolapi.getMatch(matchId).then(function(match) {
             analyzeAndRecordMatchStatisticsByTeam(match);
             analyzeAndRecordMatchStatisticsByParticipant(match);
+            analyzeAndRecordFirstBloodStatistics(match);
             promise.resolve();
           });
+        };
+
+        function analyzeAndRecordFirstBloodStatistics(match) {
+          analyzeMatch.parseIndividualDataAndUpdateIndividualHash(match, $scope.currentSummoner.id, $scope.individualRelevantStats, $scope.individualResults);
         };
 
         function analyzeAndRecordMatchStatisticsByParticipant(match) {
@@ -69,6 +80,7 @@ angular.module('LeagueViewer')
         }
 
         var reportProblems = function(error) {
+          console.log('Could not get all games, please try again!');
           console.log(error);
           $scope.errorMessage = "Could not fetch Match History for given summoner.";
         };

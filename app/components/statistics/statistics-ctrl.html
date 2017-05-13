@@ -7,11 +7,24 @@
 </div>
 <div class="search-results" ng-if="doneProcessing">
   <div>Out of {{previousSearchMatchCount}} matches</div>
-  <div ng-repeat = "stat in teamRelevantStats">{{stat}}: {{teamRelevantStatsAggregatedResults[stat] / previousSearchMatchCount}}</div>
+  <div ng-repeat = "stat in teamRelevantStats">
+    {{stat}}: {{teamRelevantStatsAggregatedResults[stat] / previousSearchMatchCount}}
+  </div>
+
   <div>WINNING TEAM</div>
-  <div ng-repeat = "stat in participantRelevantStats">{{stat}}: {{winningParticipantResults[stat] / previousSearchMatchCount}}</div>
+  <div ng-repeat = "stat in participantRelevantStats">
+    {{stat}}: {{winningParticipantResults[stat] / previousSearchMatchCount}}
+  </div>
+
   <div>LOSING TEAM</div>
-  <div ng-repeat = "stat in participantRelevantStats">{{stat}}: {{losingParticipantResults[stat] / previousSearchMatchCount}}</div>
+  <div ng-repeat = "stat in participantRelevantStats">
+    {{stat}}: {{losingParticipantResults[stat] / previousSearchMatchCount}}
+  </div>
+
+  <div>INDIVIDUAL NUMBERS</div>
+  <div ng-repeat = "stat in individualRelevantStats">
+    {{stat}}: {{individualResults[stat]}}
+  </div>
 </div>
 
 <!--<button ng-click="getAllMatches()">All matches</button>-->

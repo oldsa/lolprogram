@@ -5,13 +5,7 @@ angular.module('LeagueViewer').factory('analyzeMatch', function($http) {
     matchParticipants.forEach(function(participant) {
       //SELECT WINNING / LOSING HASH based on participantId
       var currentParticipantHash = participant.participantId <= 5 ? loserHash : winnerHash;
-      arrayOfStats.forEach(function (stat) {
-        if (currentParticipantHash[stat]) {
-          currentParticipantHash[stat] += participant.stats[stat];
-        } else {
-          currentParticipantHash[stat] = participant.stats[stat];
-        }
-      });
+      incrementOrAssignHashValue(arrayOfStats, currentParticipantHash, participant.stats);
     });
   }
 
@@ -25,17 +19,40 @@ angular.module('LeagueViewer').factory('analyzeMatch', function($http) {
       losingTeam = match.teams[0];
     }
 
+    incrementOrAssignHashValue(arrayOfStats, winningTeamHash, winningTeam);
+  }
+
+  function parseIndividualDataAndUpdateIndividualHash(match, summonerId, arrayOfStats, individualHash) {
+    var participantId;
+    var participantData;
+    match.participantIdentities.forEach(function(participant) {
+      if (participant.player.summonerId === summonerId) {
+        participantId = participant.participantId;
+      }
+    });
+    if (!participantId) {
+    }
+
+    participantData = match.participants[participantId - 1].stats;
+    incrementOrAssignHashValue(arrayOfStats, individualHash, participantData);
+  }
+
+  function incrementOrAssignHashValue(arrayOfStats, dataHash, currentMatchStats) {
     arrayOfStats.forEach(function(stat) {
-      if (winningTeamHash[stat]) {
-        winningTeamHash[stat] += Number(winningTeam[stat]);
+      if (currentMatchStats['firstBloodAssist']) {
+        console.log('first blood assist');
+      }
+      if (dataHash[stat]) {
+        dataHash[stat] += Number(currentMatchStats[stat] || null);
       } else {
-        winningTeamHash[stat] = Number(winningTeam[stat]);
+        dataHash[stat] = Number(currentMatchStats[stat] || null);
       }
     });
   }
 
   return {
     parseParticipantDataAndUpdateWinnerLoserHash : parseParticipantDataAndUpdateWinnerLoserHash,
-    parseTeamDataAndUpdateWinnerHash: parseTeamDataAndUpdateWinnerHash
+    parseTeamDataAndUpdateWinnerHash: parseTeamDataAndUpdateWinnerHash,
+    parseIndividualDataAndUpdateIndividualHash: parseIndividualDataAndUpdateIndividualHash
   };
 });

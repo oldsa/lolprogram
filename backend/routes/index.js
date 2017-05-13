@@ -1,16 +1,20 @@
-var express = require('express');
-var https = require('https');
-var Promise = require('promise');
+'use strict';
 
-var router = express.Router();
+const express = require('express');
+const https = require('https');
+const Promise = require('promise');
+const NodeClient = require('node-rest-client').Client;
+const nodeClient = new NodeClient();
+
+let router = express.Router();
 
 const mongoDbName = 'test';
 const mongoClient = require('mongodb').MongoClient;
 
-var baseUrl = 'https://na.api.pvp.net/api/lol';
-var region = 'na';
+let baseUrl = 'https://na.api.pvp.net/api/lol';
+let region = 'na';
 
-var apiKeys = [
+let apiKeys = [
   '97cb5a96-660c-40f6-aee5-59c80b50beaf', //smokensleep
   '593a8b66-8b3f-4900-99ca-f3c3a7b37229', //BIGLUIE
   '1a417329-8a55-43cb-9262-928bff0ccec9', //tbroner
@@ -19,9 +23,9 @@ var apiKeys = [
   '8ffb0850-f422-4a36-acf2-b6905253c81e', //bbottles
 ];
 
-var dbConnection;
-var rateLimitCount = 0;
-var apiRequestCount = generateRandomNumber(0, apiKeys.length - 1);
+let dbConnection;
+let rateLimitCount = 0;
+let apiRequestCount = generateRandomNumber(0, apiKeys.length - 1);
 
 function generateRandomNumber(min, max) {
   return Math.floor(Math.random() * (max - min + 1)) + min;
@@ -29,7 +33,7 @@ function generateRandomNumber(min, max) {
 
 router.use(function(req, res, next) {
   // Website you wish to allow to connect
-  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Origin', 'http://localhost:3001');
 
   // Request methods you wish to allow
   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
@@ -48,10 +52,10 @@ router.use(function(req, res, next) {
 //GET SUMMONER
 router.get('/summoner/:summonerName', function(req, res) {
   console.log('GET SUMMONER HIT!');
-  var summonerName = req.params.summonerName;
-  var requestUrl = `${baseUrl}/${region}/v1.4/summoner/by-name/${summonerName}?api_key=${returnApiKey()}`;
+  let summonerName = req.params.summonerName;
+  let requestUrl = `${baseUrl}/${region}/v1.4/summoner/by-name/${summonerName}?api_key=${returnApiKey()}`;
 
-  var mongoQueryData = {
+  let mongoQueryData = {
     collectionName: 'summoners',
     key: 'name',
     value: summonerName
@@ -62,9 +66,9 @@ router.get('/summoner/:summonerName', function(req, res) {
 
 //GET MATCH-HISTORY
 router.get('/summoner/:summonerId/matchHistory', function(req, res, next) {
-  var res1 = '';
-  //var requestUrl = `this is a test`;
-  var requestUrl = `${baseUrl}/${region}/v2.2/matchlist/by-summoner/${req.params.summonerId}?api_key=${returnApiKey()}`;
+  let res1 = '';
+  //let requestUrl = `this is a test`;
+  let requestUrl = `${baseUrl}/${region}/v2.2/matchlist/by-summoner/${req.params.summonerId}?api_key=${returnApiKey()}`;
   console.log(`query parameter season: ${req.query.season}`);
   https.get(requestUrl, function(response) {
     response.on('data', function(chunk) {
@@ -72,7 +76,7 @@ router.get('/summoner/:summonerId/matchHistory', function(req, res, next) {
     });
 
     response.on('end', function() {
-      var jsonResponse = JSON.parse(res1);
+      let jsonResponse = JSON.parse(res1);
       if (jsonResponse.status) {
         res.status(429);
         res.send('Rate limit exceeded');
@@ -93,10 +97,10 @@ router.get('/summoner/:summonerId/matchHistory', function(req, res, next) {
 
 // GET MATCH
 router.get('/match/:matchId', function(req, res) {
-  var matchId = req.params.matchId;
-  var requestUrl = `${baseUrl}/${region}/v2.2/match/${matchId}?api_key=${returnApiKey()}`;
+  let matchId = req.params.matchId;
+  let requestUrl = `${baseUrl}/${region}/v2.2/match/${matchId}?api_key=${returnApiKey()}`;
 
-  var mongoQueryData = {
+  let mongoQueryData = {
     collectionName: 'matches',
     key: 'matchId',
     value: matchId
@@ -105,9 +109,42 @@ router.get('/match/:matchId', function(req, res) {
   obtainData(requestUrl, mongoQueryData, res);
 });
 
+router.get('/summoner/:summonerId/rankedStats', (req, res) => {
+  let res1 = '';
+  let summonerId = req.params.summonerId;
+  let requestUrl = `https://na.api.riotgames.com/api/lol/NA/v1.3/stats/by-summoner/${summonerId}/ranked?season=SEASON2017&api_key=${returnApiKey()}`;
+
+  https.get(requestUrl, function(response) {
+      response.on('data', function(chunk) {
+          res1 += chunk;
+      });
+
+      response.on('end', function() {
+          let jsonResponse = JSON.parse(res1);
+          if (jsonResponse.status) {
+              res.status(429);
+              res.send('Rate limit exceeded');
+          } else {
+              res.send(jsonResponse);
+              rateLimitCount = 0;
+          }
+      });
+
+  });
+});
+
+router.get('/summoner/:summonerId/leagues', (req, res) => {
+  let summonerId = req.params.summonerId;
+  let url = `https://na1.api.riotgames.com/lol/league/v3/positions/by-summoner/${summonerId}?api_key=${returnApiKey()}`;
+
+  nodeClient.get(url, (data, response) => {
+    res.send(data);
+  }).on('error', err => reject(err));
+});
+
 // GET ALL MATCHES
 router.get('/match', function(req, res) {
-  var mongoCollectionName = 'matches';
+  let mongoCollectionName = 'matches';
 
   getAllDataFromCollection(mongoCollectionName).then(function(results) {
     res.send(results);
@@ -115,7 +152,7 @@ router.get('/match', function(req, res) {
 });
 
 function makeRiotRequest(requestUrl, mongoQueryData, res) {
-  var responseData = '';
+  let responseData = '';
 
   https.get(requestUrl, function(response) {
     response.on('data', function(data) {
@@ -181,10 +218,10 @@ function connectToMongo(connectionUrl) {
 }
 
 function queryMongoWithQueryData(mongoQueryData) {
-  var mongoQueryObject = createMongoQueryObject(mongoQueryData);
+  let mongoQueryObject = createMongoQueryObject(mongoQueryData);
 
   return new Promise(function(fulfill, reject) {
-    var collection = dbConnection.collection(mongoQueryData.collectionName);
+    let collection = dbConnection.collection(mongoQueryData.collectionName);
     collection.findOne(mongoQueryObject, function(err, doc) {
       if (err) {
         console.log('QUERY ERROR: ' + err);
@@ -197,7 +234,7 @@ function queryMongoWithQueryData(mongoQueryData) {
 }
 
 function createMongoQueryObject(mongoQueryData) {
-  var searchObject = {};
+  let searchObject = {};
   if (mongoQueryData.collectionName === 'summoners') {
     searchObject[mongoQueryData.key] = {
       '$regex': mongoQueryData.value,
@@ -211,7 +248,7 @@ function createMongoQueryObject(mongoQueryData) {
 
 function insertRequestDataIntoMongo(mongoCollectionName, value) {
   return new Promise(function(fulfill, reject) {
-    var collection = dbConnection.collection(mongoCollectionName);
+    let collection = dbConnection.collection(mongoCollectionName);
     if (value.matchId) {
       value.matchId = value.matchId.toString();
     }
@@ -228,7 +265,7 @@ function insertRequestDataIntoMongo(mongoCollectionName, value) {
 
 function getAllDataFromCollection(mongoCollectionName) {
   return new Promise(function (fulfill, reject) {
-    var collection = dbConnection.collection(mongoCollectionName);
+    let collection = dbConnection.collection(mongoCollectionName);
     collection.find().toArray(function(err, items) {
       if (err) {
         reject(err);
@@ -240,7 +277,7 @@ function getAllDataFromCollection(mongoCollectionName) {
 }
 
 function returnApiKey() {
-  var currentApiKey = apiRequestCount++ % apiKeys.length;
+  let currentApiKey = apiRequestCount++ % apiKeys.length;
   console.log(currentApiKey);
   return apiKeys[currentApiKey];
 }
@@ -249,8 +286,8 @@ function returnApiKey() {
 //       queryParams: Request's query parmaters
 //OUTPUT: filtered MatchHistory Object based on season
 function filterMatchHistoryBySeason(data, queryParams) {
-  var matchArray = data.matches;
-  var filtered = matchArray.filter(filterQueryParams);
+  let matchArray = data.matches;
+  let filtered = matchArray.filter(filterQueryParams);
 
   function filterQueryParams(match) {
     return queryParams.season ? match.season === queryParams.season : true;
